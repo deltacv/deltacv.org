@@ -1,25 +1,16 @@
 <script>
-    import { quintOut } from 'svelte/easing'; // We'll use this for transitions
+    import { quintOut } from 'svelte/easing';
     
-    // PROPS
     export let title = "Card Title";
     export let description = "This is the description that appears on hover.";
-    
-    // We now have two image props:
-    // 1. imgSrc: The static image shown by default.
-    // 2. gifSrc: The animated GIF shown only on hover.
     export let staticSrc = "/path/to/static-image.jpg"; 
     export let hoverSrc = "/path/to/your.gif"; 
     export let href = "#"; 
 
-    // STATE
     let currentSrc = staticSrc;
     let isHovering = false;
 
-    // Use isHovering to control the GIF, which is cleaner
-    // for Svelte's reactivity.
     $: currentSrc = isHovering ? hoverSrc : staticSrc;
-
 </script>
 
 <a 
@@ -43,52 +34,43 @@
 </a>
 
 <style>
-    /* Import a clean, modern font */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
     .card {
         font-family: 'Inter', sans-serif;
         position: relative;
-        width: 300px;
-        border-radius: 16px; /* Slightly softer radius */
+        width: 100%;
+        border-radius: 12px;
         overflow: hidden;
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        
-        background-color: #1a1a1a;
-        
-        /* A subtle border for a "glass" effect */
-        border: 1px solid rgba(255, 255, 255, 0.1); 
-        
-        /* Softer, more layered shadow */
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        
-        /* Smooth transitions for all animated properties */
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        text-decoration: none; /* Remove underline from link */
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+        text-decoration: none;
     }
 
     .card:hover {
-        transform: scale(1.03); /* Slightly more subtle scale */
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+        transform: scale(1.02);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+        border-color: #484f58;
     }
     
-    /* New container to group image and overlay */
     .image-container {
         position: relative;
         width: 100%;
-        overflow: hidden; /* Ensures overlay blur doesn't leak */
+        overflow: hidden;
     }
 
     .card img {
-        display: block; /* Removes bottom space */
+        display: block;
         width: 100%;
         height: auto;
-        /* This is much more robust than height: 60% */
         aspect-ratio: 16 / 9; 
         object-fit: cover;
-        background-color: #333; /* Placeholder color while image loads */
+        background-color: #21262d;
     }
 
     .overlay {
@@ -97,85 +79,54 @@
         left: 0;
         right: 0;
         bottom: 0;
-        
-        /* Darker, more readable overlay */
-        background: rgba(0, 0, 0, 0.7);
-        color: white;
-        
+        background: rgba(13, 17, 23, 0.88);
+        color: #c9d1d9;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
+        padding: 1.25rem;
         box-sizing: border-box;
-        
-        backdrop-filter: blur(0.5px);
-
-        /* --- Animation --- */
-        /* Start fully transparent and "down" (off-screen) */
         opacity: 0;
-        transform: translateY(100%); 
-        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        transform: translateY(8px);
+        transition: opacity 0.25s ease, transform 0.25s ease;
     }
 
     .card:hover .overlay {
-        /* On hover, become visible and slide "up" into view */
         opacity: 1;
         transform: translateY(0);
     }
 
     .overlay p {
         margin: 0;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        font-size: 0.9rem;
+        line-height: 1.55;
         text-align: center;
-        
-        /* --- Text Animation --- */
-        /* Start transparent and slightly down */
-        opacity: 0;
-        transform: translateY(20px);
-        
-        /* Note the transition-delay: 
-           This animation only starts *after* the overlay has started sliding in. 
-        */
-        transition: all 0.3s ease-out 0.15s;
-    }
-
-    .card:hover .overlay p {
-        /* On hover, text fades and slides in */
-        opacity: 1;
-        transform: translateY(0);
+        color: #8b949e;
     }
 
     .footer {
         width: 100%;
-        background: #131313;
-        color: white;
-        text-align: center;
-        padding: 1rem; /* More balanced padding */
+        background: #0d1117;
+        padding: 1rem 1.25rem;
         box-sizing: border-box;
-        /* Let height be flexible for longer titles */
-        min-height: 50px; 
-        
+        min-height: 56px; 
         display: flex;
         justify-content: center;
         align-items: center;
-        
-        /* This separates footer from the image-container's border-radius */
-        border-top: 1px solid rgba(255, 255, 255, 0.1); 
+        border-top: 1px solid #21262d;
     }
 
     .footer h2 {
-        color: white;
+        color: #c9d1d9;
         margin: 0;
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         font-weight: 600;
         word-wrap: break-word;
         max-width: 100%;
         transition: color 0.2s ease;
     }
 
-    /* Add feedback by changing title color on hover */
     .card:hover .footer h2 {
-        color: #4fc3f7; /* Example accent color */
+        color: #58a6ff;
     }
 </style>

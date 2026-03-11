@@ -25,87 +25,70 @@
 </a>
 
 <style>
-	/* Import the same font */
 	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-	/* --- CARD STYLES --- 
-       (Copied directly from your ProjectCard.svelte)
-    */
 	.card {
 		font-family: 'Inter', sans-serif;
 		position: relative;
-		width: 300px; /* <<< KEY */
-		border-radius: 16px;
+		width: 100%;
+		border-radius: 12px;
 		overflow: hidden;
 		cursor: pointer;
 		display: flex;
 		flex-direction: column;
-		background-color: #1a1a1a;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-		transition: transform 0.3s ease, box-shadow 0.3s ease;
+		background-color: #161b22;
+		border: 1px solid #30363d;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+		transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
 		text-decoration: none;
 	}
 
 	.card:hover {
-		transform: scale(1.03);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+		transform: scale(1.02);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+		border-color: #484f58;
 	}
 
-	/* --- NEW ICON AREA ---
-       (Styled to match your .image-container + img)
-    */
 	.icon-container {
 		position: relative;
 		width: 100%;
 		overflow: hidden;
-
-		/* This is the *most important* part. 
-           It forces this div to have the same
-           dimensions as your images.
-        */
-		aspect-ratio: 16 / 9; /* <<< KEY */
-
-		/* This is the placeholder color from your img style */
-		background-color: #333;
-
-		/* This centers the SVG icon */
+		aspect-ratio: 16 / 9;
+		background-color: #21262d;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-
-		/* Use the accent color from your title hover */
-		color: #4fc3f7;
+		color: #8b949e;
+		transition: color 0.2s ease;
 	}
 
-	/* --- FOOTER STYLES --- 
-       (Copied directly from your ProjectCard.svelte)
-    */
+	.card:hover .icon-container {
+		color: #58a6ff;
+	}
+
 	.footer {
 		width: 100%;
-		background: #131313;
-		color: white;
-		text-align: center;
-		padding: 1rem;
+		background: #0d1117;
+		padding: 1rem 1.25rem;
 		box-sizing: border-box;
-		min-height: 50px;
+		min-height: 56px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		border-top: 1px solid #21262d;
 	}
 
 	.footer h2 {
-		color: white;
+		color: #c9d1d9;
 		margin: 0;
-		font-size: 1.1rem;
+		font-size: 1.15rem;
 		font-weight: 600;
 		word-wrap: break-word;
 		max-width: 100%;
 		transition: color 0.2s ease;
 	}
 
-	/* Copied hover effect for the title */
 	.card:hover .footer h2 {
-		color: #4fc3f7;
+		color: #58a6ff;
 	}
 </style>

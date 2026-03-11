@@ -2,29 +2,51 @@
     import { fade, fly } from 'svelte/transition';
 </script>
 
-<div in:fly="{{x: -50, delay: 1000, duration: 2300}}" out:fade="{{duration: 1200}}">
-    <h1 style="color: #c9d1d9">deltacv</h1>
-    <p in:fly="{{y: -50, delay: 1200, duration: 2500}}"style="color: #8b949e">Making computer vision approachable to everyone.</p>
+<div class="logo-text" in:fly={{ x: -50, delay: 1000, duration: 2300 }} out:fade={{ duration: 1200 }}>
+    <h1>deltacv</h1>
+    <p in:fly={{ y: -50, delay: 1200, duration: 2500 }}>
+        Making computer vision approachable to everyone.
+    </p>
 </div>
 
 <style>
-    h1, p {
-        font-family: "Noto Sans", sans-serif;
-        margin: 0px;
-        padding: 0px; 
+    .logo-text {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        max-width: 90%;
+        margin-left: 2vw;
     }
 
-    p {
-        margin-right: 1vmin;
-        /* Min: 1.1rem (17.6px), Preferred: 2.9vw, Max: 2.2rem (35.2px) */
-        font-size: clamp(1.1rem, 2.9vw, 2.2rem);
-        font-weight: 400;
+    h1, p {
+        font-family: "Noto Sans", sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #c9d1d9;
     }
 
     h1 {
-        margin-right: 1vmin;
-        /* Min: 1.2rem (19.2px), Preferred: 2.8vw, Max: 2.5rem (40px) */
-        font-size: clamp(1.2rem, 2.8vw, 2.5rem);
+        font-size: clamp(1.8rem, 3vw, 2.6rem);
         font-weight: 800;
+    }
+
+    p {
+        color: #8b949e;
+        font-size: clamp(1rem, 2.3vw, 1.7rem);
+        font-weight: 400;
+        line-height: 1.3;
+        margin-top: 0.4rem;
+        white-space: nowrap; /* keeps it one line by default */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* allow wrapping only when absolutely necessary */
+    @media (max-width: 480px) {
+        .logo-text p {
+            white-space: normal;
+            text-overflow: unset;
+        }
     }
 </style>

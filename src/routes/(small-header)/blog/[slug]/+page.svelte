@@ -191,6 +191,16 @@
   }
 
   /* --- Global styles for post content --- */
+  /* Invisible bridge so hover isn't lost moving from heading text to # link */
+  :global(.content-container h1::before),
+  :global(.content-container h2::before) {
+    content: "";
+    position: absolute;
+    left: -1.6em;
+    top: 0;
+    bottom: 0;
+    width: 1.6em;
+  }
   :global(.content-container h1) {
     color: #f0f0f0;
     border-bottom: 1px solid #444;
@@ -220,6 +230,8 @@
     text-decoration: none;
     color: #888;
     opacity: 0;
+    padding: 0.2em 0.25em;
+    margin: -0.2em 0;
     transition:
       opacity 0.15s ease,
       color 0.15s ease;
