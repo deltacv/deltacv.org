@@ -101,7 +101,7 @@
 
     <section class="mt-16 mb-24">
         <div
-            class="glass-card rounded-2xl p-8 md:p-12 shadow-2xl shadow-cyan-900/10"
+            class="glass-card rounded-2xl p-8 md:p-12 shadow-2xl shadow-cyan-900/10 max-w-2xl mx-auto"
         >
             <h2 class="text-3xl font-bold text-white tracking-tight">
                 What is EOCV-Sim?

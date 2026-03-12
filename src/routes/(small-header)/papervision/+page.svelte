@@ -36,7 +36,7 @@
 
     // --- Typing effect ---
     let typedText = "";
-    const words = ["build", "prototype", "export"]; 
+    const words = ["create", "prototype", "tune", "export"]; 
     let i = 0,
         j = 0,
         isDeleting = false;
@@ -105,24 +105,16 @@
 
     <section class="my-24">
         <div
-            class="glass-card rounded-2xl p-8 md:p-12 shadow-2xl shadow-amber-900/10"
+            class="glass-card rounded-2xl p-8 md:p-12 shadow-2xl shadow-amber-900/10 max-w-2xl mx-auto"
         >
             <h2 class="text-3xl font-bold text-white tracking-tight">
                 What is PaperVision?
             </h2>
             <p class="mt-4 text-lg text-gray-300 leading-relaxed">
-                PaperVision is a node-based pipeline editor built
-                <span class="text-amber-400 font-medium">directly into EOCV-Sim</span
-                >. It lets you prototype complex vision algorithms without
-                writing lines of code.<br/>Connect nodes, adjust parameters, and see
-                your results live.
-            </p>
-            <p class="mt-4 text-lg text-gray-300 leading-relaxed">
-                Stop getting lost in complex OpenCV syntax. Design your logic
-                visually, then let PaperVision
-                <span class="font-bold text-white">generate the Java code for you</span
-                >. It's the perfect way to learn, prototype, and build advanced
-                pipelines for your FTC robot.
+                PaperVision is a node-based pipeline editor built for
+                <span class="text-amber-400 font-medium">beginners and experts alike</span>.
+                It lets you prototype complex vision algorithms without
+                writing lines of code. 
             </p>
         </div>
     </section>
@@ -147,7 +139,7 @@
                 <figure>
                     <img
                         src={papervision_nodes_img}
-                        alt="EOCV-Sim variable tuner"
+                        alt="GIF of PaperVision's node editor in action"
                         class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700"
                     />
                     <figcaption class="mt-2 text-sm text-gray-400">

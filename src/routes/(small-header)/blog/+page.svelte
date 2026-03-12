@@ -4,7 +4,7 @@
   import { fade } from "svelte/transition";
 
   // Dynamically import all blog posts (.svx files)
-  const modules = import.meta.glob("../../../posts/*.svx", { eager: true });
+  const modules = import.meta.glob("./posts/*.svx", { eager: true });
 
   let blogPosts = Object.entries(modules).map(([path, mod]) => {
     const slug = path.split("/").pop().replace(".svx", "");

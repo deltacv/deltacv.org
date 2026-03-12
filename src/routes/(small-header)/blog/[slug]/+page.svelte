@@ -1,12 +1,13 @@
 <script>
   import { error } from "@sveltejs/kit";
+  import { blur } from "svelte/transition";
   import { onMount, onDestroy } from "svelte";
   import TableOfContents from "$lib/blog/TableOfContents.svelte";
 
   // --- Load Post ---
-  const modules = import.meta.glob("../../../../posts/*.svx", { eager: true });
+  const modules = import.meta.glob("../posts/*.svx", { eager: true });
   export let params;
-  const path = `../../../../posts/${params.slug}.svx`;
+  const path = `../posts/${params.slug}.svx`;
   const mod = modules[path];
   if (!mod) throw error(404, "Post not found");
   const PostComponent = mod.default;
