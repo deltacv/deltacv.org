@@ -41,7 +41,7 @@
           <button class="nav-button">Projects ▾</button>
           <div class="dropdown-content">
             <a href="/eocv-sim" class="dropdown-item">EOCV-Sim</a>
-            <a href="/papervision" class="dropdown-item">Papervision</a>
+            <a href="/papervision" class="dropdown-item">PaperVision</a>
           </div>
         </div>
         <a href="/blog" class="nav-button">Blog</a>
@@ -61,7 +61,7 @@
         <summary class="mobile-dropdown-summary">Projects</summary>
         <div class="mobile-dropdown-items">
           <a href="/eocv-sim" class="mobile-dropdown-link" on:click={() => (menuOpen = false)}>EOCV-Sim</a>
-          <a href="/papervision" class="mobile-dropdown-link" on:click={() => (menuOpen = false)}>Papervision</a>
+          <a href="/papervision" class="mobile-dropdown-link" on:click={() => (menuOpen = false)}>PaperVision</a>
         </div>
       </details>
       <a href="/blog" class="mobile-link" on:click={() => (menuOpen = false)}>Blog</a>
