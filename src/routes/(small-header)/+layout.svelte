@@ -3,6 +3,7 @@
   import deltacv_logo from "$lib/assets/deltacv.svg";
   import { onMount } from "svelte";
   import { fade, slide } from "svelte/transition";
+  import { page } from "$app/stores";
 
   let headerEl;
   let menuOpen = false;
@@ -24,7 +25,6 @@
       setHeaderHeight(headerEl.offsetHeight);
     }
 
-    // --- Close mobile menu when switching to desktop ---
     const media = window.matchMedia("(min-width: 769px)");
 
     const handleResize = (e) => {
@@ -42,7 +42,6 @@
 </script>
 
 <div class="container">
-  <!-- Header stays exactly as you had it -->
   <header class="header" bind:this={headerEl}>
     <div class="header-inner">
       <a href="/" class="skip-link">
@@ -51,15 +50,36 @@
       </a>
 
       <nav class="nav-buttons desktop">
-        <a href="/" class="nav-button">Home</a>
+        <a href="/" class="nav-button" class:active={$page.url.pathname === "/"}>Home</a>
+
         <div class="nav-dropdown">
           <button class="nav-button">Projects ▾</button>
           <div class="dropdown-content">
-            <a href="/eocv-sim" class="dropdown-item">EOCV-Sim</a>
-            <a href="/papervision" class="dropdown-item">PaperVision</a>
+            <a
+              href="/eocv-sim"
+              class="dropdown-item"
+              class:active={$page.url.pathname === "/eocv-sim"}
+            >
+              EOCV-Sim
+            </a>
+
+            <a
+              href="/papervision"
+              class="dropdown-item"
+              class:active={$page.url.pathname === "/papervision"}
+            >
+              PaperVision
+            </a>
           </div>
         </div>
-        <a href="/blog" class="nav-button">Blog</a>
+
+        <a
+          href="/blog"
+          class="nav-button"
+          class:active={$page.url.pathname.startsWith("/blog")}
+        >
+          Blog
+        </a>
       </nav>
 
       <button class="hamburger" on:click={toggleMenu} aria-label="Toggle menu">
@@ -68,27 +88,56 @@
     </div>
   </header>
 
-  <!-- Mobile Menu -->
   {#if menuOpen}
     <nav class="mobile-menu" in:slide={{ duration: 200 }} out:fade={{ duration: 150 }}>
-      <a href="/" class="mobile-link" on:click={() => (menuOpen = false)}>Home</a>
+      <a
+        href="/"
+        class="mobile-link"
+        class:active={$page.url.pathname === "/"}
+        on:click={() => (menuOpen = false)}
+      >
+        Home
+      </a>
+
       <details class="mobile-dropdown">
         <summary class="mobile-dropdown-summary">Projects</summary>
+
         <div class="mobile-dropdown-items">
-          <a href="/eocv-sim" class="mobile-dropdown-link" on:click={() => (menuOpen = false)}>EOCV-Sim</a>
-          <a href="/papervision" class="mobile-dropdown-link" on:click={() => (menuOpen = false)}>PaperVision</a>
+          <a
+            href="/eocv-sim"
+            class="mobile-dropdown-link"
+            class:active={$page.url.pathname === "/eocv-sim"}
+            on:click={() => (menuOpen = false)}
+          >
+            EOCV-Sim
+          </a>
+
+          <a
+            href="/papervision"
+            class="mobile-dropdown-link"
+            class:active={$page.url.pathname === "/papervision"}
+            on:click={() => (menuOpen = false)}
+          >
+            PaperVision
+          </a>
         </div>
       </details>
-      <a href="/blog" class="mobile-link" on:click={() => (menuOpen = false)}>Blog</a>
+
+      <a
+        href="/blog"
+        class="mobile-link"
+        class:active={$page.url.pathname.startsWith("/blog")}
+        on:click={() => (menuOpen = false)}
+      >
+        Blog
+      </a>
     </nav>
   {/if}
 
-  <!-- Main content -->
   <main class="content">
     <slot />
   </main>
 
-  <!-- Footer -->
   <Footer />
 </div>
 
@@ -109,7 +158,6 @@
   box-sizing: border-box;
 }
 
-/* --- Container fills viewport --- */
 .container {
   display: flex;
   flex-direction: column;
@@ -119,7 +167,6 @@
   box-sizing: border-box;
 }
 
-/* --- Header (untouched) --- */
 .header {
   position: fixed;
   top: 0;
@@ -129,6 +176,7 @@
   background: #0d1117;
   border-bottom: 1px solid #161b22;
 }
+
 .header-inner {
   max-width: 1400px;
   width: 90%;
@@ -139,14 +187,37 @@
   padding: 0.75rem 0;
 }
 
-/* Logo and title */
-.skip-link { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: inherit; }
-.logo { width: clamp(40px, 5vw, 60px); height: clamp(40px, 5vw, 60px); }
-.logo img { width: 100%; height: 100%; object-fit: contain; }
-.header-title { font-family: "Noto Sans", sans-serif; font-weight: 700; font-size: clamp(1.3rem, 2.3vw, 1.9rem); margin: 0; }
+.skip-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
 
-/* Nav */
-.nav-buttons { display: flex; gap: 0.75rem; }
+.logo {
+  width: clamp(30px, 5vw, 45px);
+  height: clamp(40px, 5vw, 45px);
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.header-title {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.3vw, 1.9rem);
+  margin: 5px;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
 .nav-button {
   padding: 0.5rem 1rem;
   background-color: #21262d;
@@ -155,8 +226,15 @@
   text-decoration: none;
   font-weight: 600;
 }
-.nav-button:hover { background-color: #30363d; }
-.nav-dropdown { position: relative; }
+
+.nav-button:hover {
+  background-color: #30363d;
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
 .dropdown-content {
   display: none;
   position: absolute;
@@ -174,7 +252,11 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   z-index: 20;
 }
-.nav-dropdown:hover .dropdown-content { display: block; }
+
+.nav-dropdown:hover .dropdown-content {
+  display: block;
+}
+
 .dropdown-item {
   display: block;
   padding: 0.5rem 1rem;
@@ -183,11 +265,19 @@
   font-weight: 500;
   white-space: nowrap;
 }
-.dropdown-item:hover { background-color: #21262d; }
-.dropdown-item:first-child { border-radius: 4px 4px 0 0; }
-.dropdown-item:last-child { border-radius: 0 0 4px 4px; }
 
-/* Hamburger – padding so hitbox fully covers icon, min 44px touch target */
+.dropdown-item:hover {
+  background-color: #21262d;
+}
+
+.dropdown-item:first-child {
+  border-radius: 4px 4px 0 0;
+}
+
+.dropdown-item:last-child {
+  border-radius: 0 0 4px 4px;
+}
+
 .hamburger {
   display: none;
   flex-direction: column;
@@ -202,12 +292,14 @@
   position: relative;
   box-sizing: border-box;
 }
+
 .hamburger div {
   position: relative;
   width: 24px;
   height: 3px;
   flex-shrink: 0;
 }
+
 .hamburger div,
 .hamburger div::before,
 .hamburger div::after {
@@ -220,13 +312,29 @@
   border-radius: 2px;
   transition: all 0.3s ease;
 }
-.hamburger div::before { top: -8px; }
-.hamburger div::after { bottom: -8px; }
-.hamburger div.open { background-color: transparent; }
-.hamburger div.open::before { transform: rotate(45deg); top: 0; }
-.hamburger div.open::after { transform: rotate(-45deg); bottom: 0; }
 
-/* Mobile Menu */
+.hamburger div::before {
+  top: -8px;
+}
+
+.hamburger div::after {
+  bottom: -8px;
+}
+
+.hamburger div.open {
+  background-color: transparent;
+}
+
+.hamburger div.open::before {
+  transform: rotate(45deg);
+  top: 0;
+}
+
+.hamburger div.open::after {
+  transform: rotate(-45deg);
+  bottom: 0;
+}
+
 .mobile-menu {
   background: #161b22;
   border-top: 1px solid #30363d;
@@ -252,7 +360,6 @@
 .mobile-link:hover,
 .mobile-link:focus {
   background-color: #21262d;
-  color: #c9d1d9;
 }
 
 .mobile-dropdown {
@@ -324,7 +431,6 @@
   color: #c9d1d9;
 }
 
-/* --- Content --- */
 .content {
   flex: 1 0 auto;
   width: 100%;
@@ -336,7 +442,6 @@
   box-sizing: border-box;
 }
 
-/* --- Footer - simplified --- */
 :global(footer) {
   width: 100%;
   background-color: #0d1117;
@@ -344,10 +449,34 @@
   flex-shrink: 0;
 }
 
-/* --- Responsive --- */
+.nav-button.active {
+  background-color: #30363d;
+  color: #ffffff;
+}
+
+.dropdown-item.active {
+  background-color: #21262d;
+  color: #ffffff;
+}
+
+.mobile-link.active,
+.mobile-dropdown-link.active {
+  background-color: #21262d;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
-  .desktop { display: none; }
-  .hamburger { display: flex; }
-  .content { padding-left: 1rem; padding-right: 1rem; }
+  .desktop {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .content {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
 </style>

@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import BlogCard from "$lib/blog/BlogCard.svelte";
+  import { fade } from "svelte/transition";
 
   // Dynamically import all blog posts (.svx files)
   const modules = import.meta.glob("../../../posts/*.svx", { eager: true });
@@ -23,7 +24,7 @@
 </script>
 
 {#if ready}
-  <div class="content">
+  <div class="content" in:fade={{ duration: 300 }}>
     <header class="page-header">
       <h1>the deltacv blog</h1>
       <p>insights & learnings from our development process</p>

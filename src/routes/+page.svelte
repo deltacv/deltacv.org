@@ -31,7 +31,7 @@
         <AnimatedLogoText />
       </div>
     </header>
-    <main class="content" in:fade={{ duration: 300 }}>
+    <main class="content" in:fade={{ duration: 500 }}>
       <Project
         title="EOCV-Sim"
         description="Develop, test, and tune your EasyOpenCV pipelines directly on your computer with a simple interface!"

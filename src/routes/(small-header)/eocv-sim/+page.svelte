@@ -1,15 +1,13 @@
 <script lang="ts">
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
     import Feature from "$lib/projects/Feature.svelte";
 
-    // 1. IMPORTAMOS IMÁGENES
     import eocvsim_img from "$lib/assets/eocvsim.png";
     import eocvsim_1_img from "$lib/assets/eocvsim-tuner.gif";
 
-    // 2. IMPORTAMOS SVELTESPLIDE (El carrusel)
     import { Splide, SplideSlide } from "@splidejs/svelte-splide";
 
-    // Importamos el tema por defecto (esto añade los círculos)
     import "@splidejs/svelte-splide/css";
 
     // 3. IMPORTAMOS LOS ICONOS
@@ -66,7 +64,7 @@
     });
 </script>
 
-<main class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100">
+<main class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100" in:fade={{ duration: 300 }}>
     <section
         class="text-center min-h-[40vh] flex flex-col justify-center items-center"
     >
