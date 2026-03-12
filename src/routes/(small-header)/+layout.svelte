@@ -172,15 +172,35 @@
 .dropdown-item:first-child { border-radius: 4px 4px 0 0; }
 .dropdown-item:last-child { border-radius: 0 0 4px 4px; }
 
-/* Hamburger */
-.hamburger { display: none; background: none; border: none; cursor: pointer; width: 32px; height: 24px; position: relative; }
+/* Hamburger – padding so hitbox fully covers icon, min 44px touch target */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+  min-width: 44px;
+  min-height: 44px;
+  position: relative;
+  box-sizing: border-box;
+}
+.hamburger div {
+  position: relative;
+  width: 24px;
+  height: 3px;
+  flex-shrink: 0;
+}
 .hamburger div,
 .hamburger div::before,
 .hamburger div::after {
   content: "";
   position: absolute;
-  width: 100%;
+  width: 24px;
   height: 3px;
+  left: 0;
   background-color: #c9d1d9;
   border-radius: 2px;
   transition: all 0.3s ease;
@@ -312,7 +332,7 @@
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .desktop { display: none; }
-  .hamburger { display: block; }
+  .hamburger { display: flex; }
   .content { padding-left: 1rem; padding-right: 1rem; }
 }
 </style>
