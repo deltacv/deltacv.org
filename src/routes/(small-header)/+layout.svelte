@@ -23,6 +23,21 @@
       observer.observe(headerEl);
       setHeaderHeight(headerEl.offsetHeight);
     }
+
+    // --- Close mobile menu when switching to desktop ---
+    const media = window.matchMedia("(min-width: 769px)");
+
+    const handleResize = (e) => {
+      if (e.matches) {
+        menuOpen = false;
+      }
+    };
+
+    media.addEventListener("change", handleResize);
+
+    return () => {
+      media.removeEventListener("change", handleResize);
+    };
   });
 </script>
 
