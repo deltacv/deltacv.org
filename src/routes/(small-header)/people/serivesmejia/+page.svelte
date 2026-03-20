@@ -1,0 +1,418 @@
+<script>
+    import { fade } from "svelte/transition";
+    import PortfolioProject from "$lib/people/PortfolioProject.svelte";
+    import AuthorBlogPosts from "$lib/people/AuthorBlogPosts.svelte";
+    import { onMount } from "svelte";
+    import { GraduationCap } from "lucide-svelte";
+    import GithubIcon from "$lib/icons/GithubIcon.svelte";
+    import XIcon from "$lib/icons/XIcon.svelte";
+    import LinkedinIcon from "$lib/icons/LinkedinIcon.svelte";
+
+    let mounted = $state(false);
+    let activeTab = $state("portfolio");
+
+    onMount(() => {
+        mounted = true;
+    });
+</script>
+
+<svelte:head>
+    <title>Sebastian Erives - deltacv</title>
+</svelte:head>
+
+{#if mounted}
+    <main in:fade={{ duration: 800 }}>
+        <div class="portfolio-container">
+            <!-- Hero / Intro Section -->
+            <header class="hero">
+                <div class="hero-content">
+                    <h1 class="gradient-text">Sebastian Erives</h1>
+                    <!-- <p class="subtitle">Software Developer</p> -->
+                    <div class="education-badge" title="Universidad Tecmilenio">
+                        <GraduationCap size={16} strokeWidth={2.5} />
+                        <span>
+                            Software Engineer • Universidad Tecmilenio ('24 -
+                            '28)
+                        </span>
+                    </div>
+                    <p class="bio">
+                        Building developer tools, applications and experiences
+                        with Java and Kotlin, including computer vision
+                        workflows, to simplify complex systems into visual
+                        programming interfaces.
+                    </p>
+                    <div
+                        class="flex flex-wrap gap-2 justify-center mb-8 max-w-[600px] mx-auto"
+                        aria-label="Tech Stack"
+                    >
+                        {#each ["Java", "Kotlin", "Compose", "Android", "SvelteKit", "Minecraft"] as skill}
+                            <span
+                                class="bg-[#161b22] text-[#8b949e] border border-[#30363d] px-3.5 py-1.5 rounded-full text-[0.85rem] font-medium transition-all duration-200 cursor-default hover:border-[#58a6ff] hover:text-[#c9d1d9] hover:bg-[#21262d]"
+                            >
+                                {skill}
+                            </span>
+                        {/each}
+                    </div>
+                    <div class="flex items-center gap-5 mt-4">
+                        <span
+                            class="text-[#8b949e] text-sm font-medium tracking-wide uppercase mr-1"
+                            >Connect</span
+                        >
+                        <a
+                            href="https://github.com/serivesmejia"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-[#8b949e] hover:text-[#c9d1d9] transition-colors duration-200"
+                            aria-label="GitHub"
+                        >
+                            <GithubIcon />
+                        </a>
+                        <a
+                            href="https://x.com/serivesmejia"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-[#8b949e] hover:text-[#c9d1d9] transition-colors duration-200"
+                            aria-label="Twitter / X"
+                        >
+                            <XIcon />
+                        </a>
+                        <a
+                            href="https://www.linkedin.com/in/sebastian-erives-mejia-08b032251/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="text-[#8b949e] hover:text-[#58a6ff] transition-colors duration-200"
+                            aria-label="LinkedIn"
+                        >
+                            <LinkedinIcon />
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Tabs Navigation -->
+            <div class="flex justify-center mb-10 border-b border-[#21262d]">
+                <button
+                    class="px-8 py-4 font-bold text-[1.1rem] transition-colors duration-200 border-b-[3px] {activeTab ===
+                    'portfolio'
+                        ? 'border-[#58a6ff] text-[#c9d1d9]'
+                        : 'border-transparent text-[#8b949e] hover:text-[#c9d1d9]'}"
+                    onclick={() => (activeTab = "portfolio")}
+                >
+                    Portfolio
+                </button>
+                <button
+                    class="px-8 py-4 font-bold text-[1.1rem] transition-colors duration-200 border-b-[3px] {activeTab ===
+                    'articles'
+                        ? 'border-[#58a6ff] text-[#c9d1d9]'
+                        : 'border-transparent text-[#8b949e] hover:text-[#c9d1d9]'}"
+                    onclick={() => (activeTab = "articles")}
+                >
+                    Articles
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            {#if activeTab === "portfolio"}
+                <div in:fade={{ duration: 300 }}>
+                    <!-- Freelance Section -->
+                    <section class="projects-section">
+                        <h2 class="section-title">Freelancing Portfolio</h2>
+
+                        <!-- The Grid -->
+                        <div class="projects-grid">
+                            <!-- Project: Template -->
+                            <PortfolioProject
+                                title="GeoWare Oddysey"
+                                description=""
+                                tags={[
+                                    "Minecraft",
+                                    "Java",
+                                    "PaperMC",
+                                    "Fabric",
+                                ]}
+                            >
+                                <h3>About the Project</h3>
+                                <p>
+                                    Replace this text with information about
+                                    your client, your role in the development,
+                                    and the features you implemented.
+                                </p>
+
+                                <div class="actions">
+                                    <a
+                                        href="https://example.com"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-primary">Live Demo</a
+                                    >
+                                </div>
+                            </PortfolioProject>
+
+                            <!-- To add a new project, simply copy a <PortfolioProject> block above! -->
+                        </div>
+                    </section>
+
+                    <!-- Main Projects Section -->
+                    <section
+                        class="projects-section"
+                        style="padding-top: 1rem;"
+                    >
+                        <h2 class="section-title">Open Source Projects</h2>
+
+                        <!-- The Grid -->
+                        <div class="projects-grid">
+                            <!-- Project: PaperVision -->
+                            <PortfolioProject
+                                title="PaperVision"
+                                description="A node-based visual programming environment for OpenCV. Solo developed over 3 years."
+                                tags={[
+                                    "Kotlin",
+                                    "Kotlin DSL",
+                                    "imgui",
+                                    "OpenCV",
+                                    "Code Generation",
+                                ]}
+                            >
+                                <h3>My Role & Architecture</h3>
+                                <p>
+                                    I built PaperVision from scratch to solve
+                                    the steep learning curve of OpenCV in Java.
+                                    Over three years, the project grew into a
+                                    full node-graph interface that translates
+                                    visual logic directly into reliable Java
+                                    code.
+                                </p>
+
+                                <p>
+                                    The backend is written entirely in <strong
+                                        >Kotlin</strong
+                                    >. To make adding new features easier, I
+                                    designed an internal code-generation API
+                                    using custom
+                                    <strong>Kotlin DSLs</strong>, which makes
+                                    creating new computer vision nodes a breeze.
+                                </p>
+
+                                <div class="actions">
+                                    <a
+                                        href="https://github.com/deltacv/PaperVision"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-primary"
+                                        >View on GitHub</a
+                                    >
+                                    <a
+                                        href="/papervision"
+                                        class="btn btn-secondary">Learn More</a
+                                    >
+                                </div>
+                            </PortfolioProject>
+
+                            <!-- Project: EOCV-Sim -->
+                            <PortfolioProject
+                                title="EOCV-Sim"
+                                description="A standalone desktop simulator for testing FTC vision pipelines on PC. Scaled to support thousands of users."
+                                tags={["Java", "Swing", "Reflection", "OpenCV"]}
+                            >
+                                <h3>My Role & Technical Challenges</h3>
+                                <p>
+                                    Started as a solo project when I was 14,
+                                    EOCV-Sim was built to fix the painfully
+                                    slow, hardware-dependant deployment cycle of
+                                    FTC robotics. I created a simulated
+                                    environment in <strong>Java</strong> that runs
+                                    the robot's vision APIs right on a PC.
+                                </p>
+
+                                <p>
+                                    As the project scaled, I added an embedded
+                                    Java compiler and a dynamic class-loading
+                                    workspace. I also built a live variable
+                                    tuner using Reflection and a FlatLaf Swing
+                                    UI, alongside packaging cross-platform
+                                    OpenCV binaries so it works easily across
+                                    Windows, macOS, and Linux.
+                                </p>
+
+                                <div class="actions">
+                                    <a
+                                        href="https://github.com/deltacv/EOCV-Sim"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-primary"
+                                        >GitHub Repository</a
+                                    >
+                                    <a
+                                        href="/eocv-sim"
+                                        class="btn btn-secondary">Learn More</a
+                                    >
+                                </div>
+                            </PortfolioProject>
+
+                            <!-- Project: DeltaCV -->
+                            <PortfolioProject
+                                title="The 'deltacv' Website"
+                                description="A custom developer portfolio and server-side rendered blog engine built from scratch."
+                                tags={[
+                                    "SvelteKit",
+                                    "TailwindCSS",
+                                    "Cloudflare Pages",
+                                    "Frontend",
+                                ]}
+                            >
+                                <h3>My Role & Implementation</h3>
+                                <p>
+                                    I designed and built this website from the
+                                    ground up to serve as the landing page for
+                                    all deltacv projects. Wanting something
+                                    better than a generic template, I created a
+                                    custom dark theme built on <strong
+                                        >SvelteKit</strong
+                                    >
+                                    and <strong>TailwindCSS</strong>.
+                                </p>
+
+                                <p>
+                                    It uses server-side rendering (SSR) to stay
+                                    fast, alongside a custom markdown-driven
+                                    blog built with Svelte components. The whole
+                                    site is deployed via <strong
+                                        >Cloudflare Pages</strong
+                                    >.
+                                </p>
+
+                                <div class="actions">
+                                    <a
+                                        href="https://github.com/deltacv/deltacv.org"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-primary">Source Code</a
+                                    >
+                                    <a href="/" class="btn btn-secondary"
+                                        >Go to Home</a
+                                    >
+                                </div>
+                            </PortfolioProject>
+
+                            <!-- To add a new project, simply copy a <PortfolioProject> block above! -->
+                        </div>
+                    </section>
+                </div>
+            {:else if activeTab === "articles"}
+                <div in:fade={{ duration: 300 }}>
+                    <AuthorBlogPosts authorEmail="serivesmejia@deltacv.org" />
+                </div>
+            {/if}
+        </div>
+    </main>
+{/if}
+
+<style>
+    .portfolio-container {
+        font-family: "Inter", sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: calc(var(--header-height, 64px) + 1.5rem) 2rem 2rem;
+        color: #c9d1d9;
+    }
+
+    /* Hero Section */
+    .hero {
+        padding: 4rem 0 5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border-bottom: 1px solid #21262d;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .gradient-text {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 800;
+        margin: 0 0 0.5rem 0;
+        background: -webkit-linear-gradient(45deg, #58a6ff, #a371f7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -1px;
+    }
+
+    .education-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(88, 166, 255, 0.1);
+        color: #58a6ff;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(88, 166, 255, 0.2);
+        box-shadow: 0 2px 8px rgba(88, 166, 255, 0.1);
+    }
+
+    .bio {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #c9d1d9;
+        margin: 0 0 2rem 0;
+    }
+
+    /* Projects Section */
+    .projects-section {
+        padding: 4rem 0;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0 0 2rem 0;
+        color: #ffffff;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* CSS Grid */
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        justify-items: center;
+    }
+
+    .projects-grid :global(.portfolio-card) {
+        max-width: 420px;
+        width: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .projects-grid {
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 16px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .projects-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .projects-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .projects-grid :global(.portfolio-card) {
+            max-width: 320px;
+        }
+    }
+</style>

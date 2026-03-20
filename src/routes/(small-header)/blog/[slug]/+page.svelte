@@ -2,18 +2,34 @@
   import { error } from "@sveltejs/kit";
   import { blur } from "svelte/transition";
   import { onMount, onDestroy } from "svelte";
+  import AuthorIcon from "$lib/icons/AuthorIcon.svelte";
   import TableOfContents from "$lib/blog/TableOfContents.svelte";
 
   // --- Load Post ---
-  const modules = import.meta.glob("../posts/*.svx", { eager: true });
+  const modules = import.meta.glob("/src/posts/*.svx", { eager: true });
   export let params;
-  const path = `../posts/${params.slug}.svx`;
+  const path = `/src/posts/${params.slug}.svx`;
   const mod = modules[path];
   if (!mod) throw error(404, "Post not found");
   const PostComponent = mod.default;
 
   // --- Get Metadata ---
-  const { title, date } = mod.metadata || {};
+  const { title, date, author, tags } = mod.metadata || {};
+  /** @type {string[]} */
+  const postTags = Array.isArray(tags) ? tags : [];
+
+  // --- Resolve Author ---
+  let authorData = null;
+  if (author) {
+    const authorModules = import.meta.glob("../../people/**/author.ts", { eager: true });
+    for (const [authorPath, authorMod] of Object.entries(authorModules)) {
+      if (authorMod.author && authorMod.author.email === author) {
+        const href = authorPath.replace("../../people", "/people").replace("/author.ts", "");
+        authorData = { ...authorMod.author, href };
+        break;
+      }
+    }
+  }
 
   // --- TOC and Scroll-Spy State ---
   let headings = [];
@@ -110,20 +126,41 @@
 
 <svelte:window on:scroll={() => {}} />
 
-<div class="toc-container" class:visible={hasHeadings}>
-  <TableOfContents {headings} {activeHeadingId} />
-</div>
+<main in:blur={{ duration: 300 }}>
+  <div class="toc-container" class:visible={hasHeadings}>
+    <TableOfContents {headings} {activeHeadingId} />
+  </div>
 
-<article class="content-container" bind:this={contentEl}>
-  {#if title}
-    <p class="post-title">{title}</p>
-  {/if}
-  {#if date}
-    <p class="date">{date}</p>
-  {/if}
+  <article class="content-container" bind:this={contentEl}>
+    {#if title}
+      <p class="post-title">{title}</p>
+    {/if}
+    <div class="post-meta">
+        {#if date}
+            <span style="margin: 0;">{date}</span>
+        {/if}
+        {#if date && authorData}
+            <span style="opacity: 0.5;">•</span>
+        {/if}
+        {#if authorData}
+            <a href={authorData.href} class="author-link">
+               <AuthorIcon class="author-icon" />
+               {authorData.name}
+            </a>
+        {/if}
+    </div>
 
-  <svelte:component this={PostComponent} />
-</article>
+    {#if postTags.length > 0}
+        <div class="post-tags">
+            {#each postTags as tag}
+                <a href={`/blog?tag=${encodeURIComponent(tag)}`} class="post-tag">{tag}</a>
+            {/each}
+        </div>
+    {/if}
+
+    <svelte:component this={PostComponent} />
+  </article>
+</main>
 
 <style>
   /* Fixes scrolling to anchors with a fixed header */
@@ -141,9 +178,9 @@
     display: block;
   }
   .content-container {
-    margin: 2rem auto;
+    margin: 0 auto;
     max-width: 800px;
-    padding: 0 1rem;
+    padding: calc(var(--header-height, 64px) + 2rem) 1rem 4rem;
     min-width: 0;
   }
   @media (max-width: 1200px) {
@@ -183,12 +220,59 @@
     margin-bottom: 0.5rem;
     text-align: center;
   }
-  .date {
+  .post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
     color: #a0a0a0;
-    margin-top: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
     font-size: 1rem;
-    text-align: center;
+    font-weight: 500;
+  }
+  :global(.author-icon) {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-right: 0.25rem;
+    opacity: 0.8;
+  }
+  .author-link {
+    display: inline-flex;
+    align-items: center;
+    color: #58a6ff !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease;
+  }
+  .author-link:hover {
+    color: #c9d1d9 !important;
+    text-decoration: underline !important;
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
+
+  .post-tag {
+    background: rgba(88, 166, 255, 0.1);
+    color: #58a6ff;
+    border: 1px solid rgba(88, 166, 255, 0.25);
+    border-radius: 9999px;
+    padding: 3px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .post-tag:hover {
+    background: rgba(88, 166, 255, 0.22);
+    border-color: rgba(88, 166, 255, 0.5);
   }
 
   /* --- Global styles for post content --- */
@@ -271,7 +355,7 @@
     text-decoration: none;
   }
 
-   /* --- Blockquote Styling --- */
+  /* --- Blockquote Styling --- */
   :global(.content-container blockquote) {
     border-left: 3px solid #64b5ff;
     background: rgba(255, 255, 255, 0.03);
