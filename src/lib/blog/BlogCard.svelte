@@ -59,7 +59,7 @@
         text-decoration: none;
         color: #ffffff;
         transition: all 0.25s ease-in-out;
-        width: 350px;
+        width: 100%;
         max-width: 100%;
         box-sizing: border-box;
     }

@@ -2,14 +2,14 @@
     import { onMount } from "svelte";
     import { fade } from "svelte/transition";
     import Feature from "$lib/projects/Feature.svelte";
-    
+
     // 1. IMPORTAMOS IMÁGENES
     import papervision_nodes_img from "$lib/assets/papervision-1.gif";
     import papervision_nodes_1_img from "$lib/assets/papervision.gif";
 
     // 2. IMPORTAMOS SVELTESPLIDE (El carrusel)
     import { Splide, SplideSlide } from "@splidejs/svelte-splide";
-    
+
     // Importamos el tema por defecto (esto añade los círculos)
     import "@splidejs/svelte-splide/css";
 
@@ -36,7 +36,7 @@
 
     // --- Typing effect ---
     let typedText = "";
-    const words = ["create", "prototype", "tune", "export"]; 
+    const words = ["create", "prototype", "tune", "export"];
     let i = 0,
         j = 0,
         isDeleting = false;
@@ -67,8 +67,16 @@
     });
 </script>
 
+<svelte:head>
+    <title>PaperVision - deltacv</title>
+    <meta name="description" content="PaperVision is a node-based visual editor for OpenCV pipelines. Prototype, tune, and export complex computer vision algorithms without writing a single line of code." />
+</svelte:head>
+
 <div class="project-page-wrapper">
-    <main class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100" in:fade={{ duration: 300 }}>
+    <main
+        class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100"
+        in:fade={{ duration: 300 }}
+    >
         <section
             class="text-center min-h-[40vh] flex flex-col justify-center items-center"
         >
@@ -77,10 +85,14 @@
             >
                 PaperVision
             </h1>
-            
-            <p class="mt-6 text-xl md:text-2xl font-medium text-gray-300 max-w-2xl">
+
+            <p
+                class="mt-6 text-xl md:text-2xl font-medium text-gray-300 max-w-2xl"
+            >
                 Visually
-                <span class="font-bold text-white typing-cursor">{typedText}</span>
+                <span class="font-bold text-white typing-cursor"
+                    >{typedText}</span
+                >
                 your computer vision algorithms.
             </p>
 
@@ -113,16 +125,19 @@
                 </h2>
                 <p class="mt-4 text-lg text-gray-300 leading-relaxed">
                     PaperVision is a node-based pipeline editor built for
-                    <span class="text-amber-400 font-medium">beginners and experts alike</span>.
-                    It lets you prototype complex vision algorithms without
-                    writing lines of code. 
+                    <span class="text-amber-400 font-medium"
+                        >beginners and experts alike</span
+                    >. It lets you prototype complex vision algorithms without
+                    writing lines of code.
                 </p>
             </div>
         </section>
 
-        
         <section class="max-w-2xl w-full mx-auto mt-16 mb-24">
-            <Splide options={splideOptions} aria-label="PaperVision Screenshots">
+            <Splide
+                options={splideOptions}
+                aria-label="PaperVision Screenshots"
+            >
                 <SplideSlide class="flex items-center">
                     <figure>
                         <img
@@ -144,7 +159,8 @@
                             class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700"
                         />
                         <figcaption class="mt-2 text-sm text-gray-400">
-                            Seamlessly visualize and tune your pipeline in the editor
+                            Seamlessly visualize and tune your pipeline in the
+                            editor
                         </figcaption>
                     </figure>
                 </SplideSlide>
@@ -159,7 +175,9 @@
                 From visual editing to live simulation.
             </p>
 
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div
+                class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
                 <Feature
                     icon={Zap}
                     title="Visual Node Editor"
@@ -199,12 +217,23 @@
     .project-page-wrapper {
         min-height: 100vh;
         background-color: #05070a;
-        background-image: 
-            radial-gradient(circle at 20% 30%, rgba(251, 191, 36, 0.035), transparent 30%),
-            radial-gradient(circle at 80% 70%, rgba(249, 115, 22, 0.02), transparent 30%),
-            linear-gradient(rgba(48, 54, 61, 0.15) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(48, 54, 61, 0.15) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+        background-image: radial-gradient(
+                circle at 20% 30%,
+                rgba(251, 191, 36, 0.035),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 80% 70%,
+                rgba(249, 115, 22, 0.02),
+                transparent 30%
+            ),
+            linear-gradient(rgba(48, 54, 61, 0.15) 1px, transparent 2px),
+            linear-gradient(90deg, rgba(48, 54, 61, 0.15) 1px, transparent 2px);
+        background-size:
+            100% 100%,
+            100% 100%,
+            80px 80px,
+            80px 80px;
         background-attachment: fixed;
     }
 
@@ -218,7 +247,7 @@
     /* ESTILOS DEL CARRUSEL */
     :global(.splide__pagination__page.is-active) {
         /* CAMBIO: Color de la paginación */
-        background: #facc15 !important; 
+        background: #facc15 !important;
         transform: scale(1.2);
     }
     :global(.splide__pagination__page) {
@@ -231,7 +260,7 @@
 
     /* Centra la paginación (círculos) */
     :global(.splide__pagination) {
-        bottom: -1.5rem; 
+        bottom: -1.5rem;
     }
 
     /* ESTILOS ANTERIORES (sin cambios) */

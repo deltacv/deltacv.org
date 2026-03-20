@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   export let visible = true;
   
   import deltacv_logo from "$lib/assets/deltacv.svg";
@@ -7,12 +7,23 @@
   import { cubicOut, cubicIn } from "svelte/easing";
   import { page } from "$app/stores";
 
-  let headerEl;
+  let headerEl: any;
+  let navbarWrapper: any;
   let menuOpen = false;
+  let activeDropdown: string | null = null;
   let windowScrollY = 0;
+  let lastScrollY = 0;
+
+  function toggleDropdown(name: string, event: any) {
+    event.stopPropagation();
+    activeDropdown = activeDropdown === name ? null : name;
+  }
 
   function toggleMenu() {
     menuOpen = !menuOpen;
+    if (menuOpen) {
+      lastScrollY = windowScrollY;
+    }
   }
 
   function setHeaderHeight(height) {
@@ -20,6 +31,22 @@
       "--header-height",
       `${height}px`,
     );
+  }
+
+  function handleClickOutside(event: any) {
+    if (navbarWrapper && !navbarWrapper.contains(event.target)) {
+      menuOpen = false;
+      activeDropdown = null;
+    }
+  }
+
+  function handleScroll() {
+    if (menuOpen) {
+      const scrollDiff = Math.abs(windowScrollY - lastScrollY);
+      if (scrollDiff > 60) {
+        menuOpen = false;
+      }
+    }
   }
 
   onMount(() => {
@@ -31,25 +58,30 @@
       setHeaderHeight(headerEl.offsetHeight);
     }
 
-    const media = window.matchMedia("(min-width: 769px)");
-    const handleResize = (e) => {
+    const media = window.matchMedia("(min-width: 1025px)");
+    const handleResize = (e: any) => {
       if (e.matches) {
         menuOpen = false;
       }
     };
     media.addEventListener("change", handleResize);
+    window.addEventListener("mousedown", handleClickOutside);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       media.removeEventListener("change", handleResize);
+      window.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("scroll", handleScroll);
     };
   });
 </script>
 
 <svelte:window bind:scrollY={windowScrollY} />
 
-{#if visible}
-<div class="navbar-wrapper" transition:fly={{ y: -100, duration: 400, easing: cubicOut }}>
-  <header class="header" bind:this={headerEl}>
+<div class="navbar-wrapper" bind:this={navbarWrapper}>
+  {#if visible}
+    <div transition:fly={{ y: -100, duration: 400, easing: cubicOut }}>
+      <header class="header" bind:this={headerEl}>
     <div class="header-inner">
       <a href="/" class="skip-link">
         <div class="logo"><img src={deltacv_logo} alt="deltacv logo" /></div>
@@ -61,13 +93,14 @@
           >Home</a
         >
 
-        <div class="nav-dropdown">
-          <button class="nav-button">Projects ▾</button>
+        <div class="nav-dropdown" class:is-open={activeDropdown === 'projects'}>
+          <button class="nav-button" on:click={(e) => toggleDropdown('projects', e)}>Projects ▾</button>
           <div class="dropdown-content">
             <a
               href="/eocv-sim"
               class="dropdown-item"
               class:active={$page.url.pathname === "/eocv-sim"}
+              on:click={() => (activeDropdown = null)}
             >
               EOCV-Sim
             </a>
@@ -76,19 +109,21 @@
               href="/papervision"
               class="dropdown-item"
               class:active={$page.url.pathname === "/papervision"}
+              on:click={() => (activeDropdown = null)}
             >
               PaperVision
             </a>
           </div>
         </div>
 
-        <div class="nav-dropdown">
-          <button class="nav-button">About ▾</button>
+        <div class="nav-dropdown" class:is-open={activeDropdown === 'about'}>
+          <button class="nav-button" on:click={(e) => toggleDropdown('about', e)}>About ▾</button>
           <div class="dropdown-content">
             <a
               href="/blog"
               class="dropdown-item"
               class:active={$page.url.pathname.startsWith("/blog")}
+              on:click={() => (activeDropdown = null)}
             >
               Blog
             </a>
@@ -96,6 +131,7 @@
               href="/people"
               class="dropdown-item"
               class:active={$page.url.pathname.startsWith("/people")}
+              on:click={() => (activeDropdown = null)}
             >
               People
             </a>
@@ -174,6 +210,7 @@
   {/if}
 </div>
 {/if}
+</div>
 
 <style>
   .navbar-wrapper {
@@ -270,7 +307,8 @@
     z-index: 20;
   }
 
-  .nav-dropdown:hover .dropdown-content {
+  .nav-dropdown:hover .dropdown-content,
+  .nav-dropdown.is-open .dropdown-content {
     display: block;
   }
 
@@ -353,13 +391,18 @@
   }
 
   .mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
     background: #161b22;
     border-top: 1px solid #30363d;
     padding: 1rem 1.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    margin-top: var(--header-height, 64px);
+    margin-top: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   }
 
   .mobile-link,
@@ -466,7 +509,7 @@
     color: #ffffff;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 1024px) {
     .desktop {
       display: none;
     }

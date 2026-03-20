@@ -18,6 +18,7 @@
 
 <svelte:head>
     <title>Sebastian Erives - deltacv</title>
+    <meta name="description" content="Sebastian Erives is a software developer and founder of deltacv, building computer vision tools, Android apps, and Kotlin/Java developer experiences." />
 </svelte:head>
 
 {#if mounted}
@@ -31,8 +32,7 @@
                     <div class="education-badge" title="Universidad Tecmilenio">
                         <GraduationCap size={16} strokeWidth={2.5} />
                         <span>
-                            Software Engineer • Universidad Tecmilenio ('24 -
-                            '28)
+                            Software Engineer • Universidad Tecmilenio ('24&nbsp;-&nbsp;'28)
                         </span>
                     </div>
                     <p class="bio">
@@ -90,7 +90,7 @@
             </header>
 
             <!-- Tabs Navigation -->
-            <div class="flex justify-center mb-10 border-b border-[#21262d]">
+            <div class="tabs-container">
                 <button
                     class="px-8 py-4 font-bold text-[1.1rem] transition-colors duration-200 border-b-[3px] {activeTab ===
                     'portfolio'
@@ -312,7 +312,7 @@
         font-family: "Inter", sans-serif;
         max-width: 1200px;
         margin: 0 auto;
-        padding: calc(var(--header-height, 64px) + 1.5rem) 2rem 2rem;
+        padding: calc(var(--header-height, 64px) + 2.5rem) 2rem 2rem;
         color: #c9d1d9;
     }
 
@@ -347,16 +347,27 @@
     .education-badge {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
+        gap: 12px;
         background: rgba(88, 166, 255, 0.1);
         color: #58a6ff;
-        padding: 6px 16px;
-        border-radius: 20px;
+        padding: 8px 16px;
+        border-radius: 12px;
         font-size: 0.9rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
         border: 1px solid rgba(88, 166, 255, 0.2);
         box-shadow: 0 2px 8px rgba(88, 166, 255, 0.1);
+        text-align: left;
+        max-width: 100%;
+        line-height: 1.4;
+    }
+
+    .education-badge span {
+        text-wrap: balance;
+    }
+
+    .education-badge :global(svg) {
+        flex-shrink: 0;
     }
 
     .bio {
@@ -364,6 +375,17 @@
         line-height: 1.6;
         color: #c9d1d9;
         margin: 0 0 2rem 0;
+    }
+
+    .tabs-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 2.5rem;
+        border-bottom: 1px solid #21262d;
+    }
+
+    .tabs-container button {
+        cursor: pointer;
     }
 
     /* Projects Section */
@@ -403,6 +425,16 @@
     @media (max-width: 600px) {
         .projects-grid {
             grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .education-badge {
+            text-align: center;
+            padding: 10px 18px;
+            gap: 14px;
+        }
+
+        .education-badge :global(svg) {
+            transform: scale(1.15);
         }
     }
 

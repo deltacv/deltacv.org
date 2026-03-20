@@ -32,6 +32,11 @@
 
 <svelte:window bind:scrollY />
 
+<svelte:head>
+  <title>deltacv - Computer Vision Tools for Java & Kotlin</title>
+  <meta name="description" content="deltacv builds developer tools and visual programming interfaces for computer vision — including PaperVision, a node-based OpenCV pipeline editor, and EOCV-Sim for FTC robotics." />
+</svelte:head>
+
 {#if ready}
   <div class="container">
     <Navbar visible={scrollY > 250} />
@@ -47,7 +52,7 @@
       <div class="featured-section">
         <FeaturedProject
           title="PaperVision"
-          description="Create your custom OpenCV algorithms using a user-friendly node editor interface inspired by Blender and Unreal Engine blueprints. Built from the ground up to solve the steep learning curve of Computer Vision in Java."
+          description="Create your custom OpenCV algorithms using a user-friendly visual interface inspired by industry-leading node editors. Built from the ground up to solve the steep learning curve of Computer Vision in Java & Python."
           hoverSrc={papervision_img}
           staticSrc={papervision_gif}
           href="/papervision"
@@ -120,23 +125,38 @@
     overflow: hidden;
     background-color: #05070a; /* Slightly darker than 0d1117 for depth */
     /* Composite mesh background - extremely subtle */
-    background-image: 
-      radial-gradient(circle at 20% 30%, rgba(88, 166, 255, 0.02), transparent 25%),
-      radial-gradient(circle at 85% 70%, rgba(139, 148, 158, 0.015), transparent 25%),
-      linear-gradient(rgba(48, 54, 61, 0.15) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(48, 54, 61, 0.15) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+    background-image: radial-gradient(
+        circle at 20% 30%,
+        rgba(88, 166, 255, 0.02),
+        transparent 30%
+      ),
+      radial-gradient(
+        circle at 85% 70%,
+        rgba(139, 148, 158, 0.015),
+        transparent 30%
+      ),
+      linear-gradient(rgba(48, 54, 61, 0.28) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(48, 54, 61, 0.28) 1px, transparent 1px);
+    background-size:
+      100% 100%,
+      100% 100%,
+      80px 80px,
+      80px 80px;
     background-position: center center;
   }
 
   .header::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, rgba(88, 166, 255, 0.06) 0%, transparent 60%);
+    background: radial-gradient(
+      circle,
+      rgba(88, 166, 255, 0.08) 0%,
+      transparent 60%
+    );
     transform: translate(-50%, -50%);
     pointer-events: none;
     z-index: -1;

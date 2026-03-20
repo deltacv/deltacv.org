@@ -126,7 +126,7 @@
       .toLowerCase()
       .replace(/[^a-z0-9\s]/g, " ")
       .split(/\s+/)
-      .filter((w) => w.length >= 1 && !STOP_WORDS.has(w));
+      .filter((w) => w.length >= 2 && !STOP_WORDS.has(w));
   }
 
   // Per-letter shard cache: letter → resolved data
@@ -163,12 +163,13 @@
   let lastIndexedQuery = "";
 
   async function runIndexSearch(q: string) {
-    if (!q) {
+    const trimmed = q.trim();
+    if (trimmed.length < 2) {
       fulltextSlugs = new Set();
       return;
     }
 
-    const tokens = tokenizeQuery(q);
+    const tokens = tokenizeQuery(trimmed);
     if (tokens.length === 0) {
       fulltextSlugs = new Set();
       return;
@@ -247,6 +248,11 @@
   });
 </script>
 
+<svelte:head>
+  <title>Blog - deltacv</title>
+  <meta name="description" content="Technical writing from the deltacv team — insights and learnings on computer vision, Java/Kotlin development, robotics, and building developer tools." />
+</svelte:head>
+
 {#if ready}
   <div class="content" in:fade={{ duration: 300 }}>
     <header class="page-header">
@@ -308,7 +314,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: calc(var(--header-height, 64px) + 1.5rem) 2rem 2rem;
+    padding: calc(var(--header-height, 64px) + 4rem) 2rem 2rem;
     max-width: 1600px;
     margin: 0 auto;
     box-sizing: border-box;
@@ -375,9 +381,10 @@
   /* Blog cards grid */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 420px));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 420px));
     gap: 30px;
     width: 100%;
+    max-width: 100%;
     justify-content: center;
   }
 
@@ -402,10 +409,6 @@
   }
 
   @media (max-width: 480px) {
-    .content {
-      padding: 5vh 2%;
-    }
-
     .page-header {
       margin-bottom: 6vh; /* more spacing on mobile */
       gap: 0.8rem;

@@ -64,8 +64,16 @@
     });
 </script>
 
+<svelte:head>
+    <title>EOCV-Sim - deltacv</title>
+    <meta name="description" content="EOCV-Sim is a desktop simulator for EasyOpenCV — develop, test, and tune your FTC robotics vision pipelines directly on your computer without touching the robot." />
+</svelte:head>
+
 <div class="project-page-wrapper">
-    <main class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100" in:fade={{ duration: 300 }}>
+    <main
+        class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100"
+        in:fade={{ duration: 300 }}
+    >
         <section
             class="text-center min-h-[40vh] flex flex-col justify-center items-center"
         >
@@ -74,9 +82,13 @@
             >
                 EOCV-Sim
             </h1>
-            <p class="mt-6 text-xl md:text-2xl font-medium text-gray-300 max-w-2xl">
+            <p
+                class="mt-6 text-xl md:text-2xl font-medium text-gray-300 max-w-2xl"
+            >
                 A simple interface to
-                <span class="font-bold text-white typing-cursor">{typedText}</span>
+                <span class="font-bold text-white typing-cursor"
+                    >{typedText}</span
+                >
                 your computer vision pipelines.
             </p>
 
@@ -111,12 +123,12 @@
                     EOCV-Sim (EasyOpenCV Simulator) is a desktop tool built for
                     <span class="text-cyan-400 font-medium"
                         >FIRST Tech Challenge (FTC)</span
-                    > teams. It mimics the EasyOpenCV library and FTC SDK, letting you
-                    test and refine computer vision pipelines right on your computer.
+                    > teams. It mimics the EasyOpenCV library and FTC SDK, letting
+                    you test and refine computer vision pipelines right on your computer.
                 </p>
                 <p class="mt-4 text-lg text-gray-300 leading-relaxed">
-                    Stop wasting time on the slow build-and-deploy cycle. Perfect
-                    your vision code, then simply
+                    Stop wasting time on the slow build-and-deploy cycle.
+                    Perfect your vision code, then simply
                     <span class="font-bold text-white">copy and paste it</span> directly
                     into your robot's Android Studio project. Test instantly, deploy
                     once.
@@ -124,7 +136,10 @@
             </div>
 
             <div class="max-w-2xl w-full mx-auto mt-12">
-                <Splide options={splideOptions} aria-label="EOCV-Sim Screenshots">
+                <Splide
+                    options={splideOptions}
+                    aria-label="EOCV-Sim Screenshots"
+                >
                     <SplideSlide class="flex items-center">
                         <figure>
                             <img
@@ -162,7 +177,9 @@
                 From live tuning to node-based editing.
             </p>
 
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div
+                class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
                 <Feature
                     icon={Eye}
                     title="Live Pipeline Testing"
@@ -203,12 +220,23 @@
     .project-page-wrapper {
         min-height: 100vh;
         background-color: #05070a;
-        background-image: 
-            radial-gradient(circle at 20% 30%, rgba(34, 211, 238, 0.03), transparent 30%),
-            radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.02), transparent 30%),
-            linear-gradient(rgba(48, 54, 61, 0.15) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(48, 54, 61, 0.15) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 80px 80px, 80px 80px;
+        background-image: radial-gradient(
+                circle at 20% 30%,
+                rgba(34, 211, 238, 0.03),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 80% 70%,
+                rgba(14, 165, 233, 0.02),
+                transparent 30%
+            ),
+            linear-gradient(rgba(48, 54, 61, 0.15) 1px, transparent 2px),
+            linear-gradient(90deg, rgba(48, 54, 61, 0.15) 1px, transparent 2px);
+        background-size:
+            100% 100%,
+            100% 100%,
+            80px 80px,
+            80px 80px;
         background-attachment: fixed;
     }
 

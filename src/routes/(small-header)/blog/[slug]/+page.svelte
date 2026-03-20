@@ -32,6 +32,7 @@
   }
 
   // --- TOC and Scroll-Spy State ---
+  /** @type {Array<{id: string, text: string, tagName: string}>} */
   let headings = [];
   let contentEl;
   let activeHeadingId = "";
@@ -73,11 +74,17 @@
         anchorLink.href = `#${id}`;
         anchorLink.addEventListener("click", (e) => {
           e.preventDefault();
+          e.stopPropagation(); // prevent heading click from toggling
           const url = `${window.location.origin}${window.location.pathname}#${id}`;
           navigator.clipboard.writeText(url).catch(console.error);
           window.location.hash = id;
         });
         node.appendChild(anchorLink);
+
+        // Toggle visibility on tap/click for mobile
+        node.addEventListener("click", () => {
+          node.classList.toggle("anchor-visible");
+        });
       }
     });
 
@@ -151,11 +158,20 @@
     </div>
 
     {#if postTags.length > 0}
-        <div class="post-tags">
-            {#each postTags as tag}
-                <a href={`/blog?tag=${encodeURIComponent(tag)}`} class="post-tag">{tag}</a>
-            {/each}
+      <div class="post-tags">
+          {#each postTags as tag}
+              <a href={`/blog?tag=${encodeURIComponent(tag)}`} class="post-tag">{tag}</a>
+          {/each}
+      </div>
+    {/if}
+
+    {#if hasHeadings}
+      <details class="mobile-toc">
+        <summary>Table of Contents</summary>
+        <div class="mobile-toc-content">
+          <TableOfContents {headings} {activeHeadingId} />
         </div>
+      </details>
     {/if}
 
     <svelte:component this={PostComponent} />
@@ -170,8 +186,15 @@
 
   .toc-container {
     position: fixed;
-    top: 150px;
+    top: 50%;
+    transform: translateY(-50%);
     left: 2rem;
+    width: 260px;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 1rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(48, 54, 61, 0.5) transparent;
     display: none;
   }
   .toc-container.visible {
@@ -183,9 +206,21 @@
     padding: calc(var(--header-height, 64px) + 2rem) 1rem 4rem;
     min-width: 0;
   }
-  @media (max-width: 1200px) {
+  @media (max-width: 1500px) {
     .toc-container {
       display: none !important;
+    }
+  }
+
+  @media (min-width: 1700px) {
+    .toc-container {
+      width: 320px;
+    }
+  }
+
+  @media (min-width: 1900px) {
+    .toc-container {
+      width: 400px;
     }
   }
 
@@ -276,16 +311,6 @@
   }
 
   /* --- Global styles for post content --- */
-  /* Invisible bridge so hover isn't lost moving from heading text to # link */
-  :global(.content-container h1::before),
-  :global(.content-container h2::before) {
-    content: "";
-    position: absolute;
-    left: -1.6em;
-    top: 0;
-    bottom: 0;
-    width: 1.6em;
-  }
   :global(.content-container h1) {
     color: #f0f0f0;
     border-bottom: 1px solid #444;
@@ -293,12 +318,18 @@
     margin-top: 2.5rem;
     margin-bottom: 1rem;
     position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
   :global(.content-container h2) {
     color: #e0e0e0;
     font-size: 1.5rem;
     margin-top: 2rem;
     position: relative;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
   }
   :global(.content-container p) {
     color: #ccc;
@@ -307,29 +338,100 @@
   }
 
   :global(a.heading-anchor-link) {
-    position: absolute;
-    left: -1.2em;
-    top: 0;
-    font-size: 0.8em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 0.6rem;
+    font-size: 0.75em;
     font-weight: 500;
     text-decoration: none;
-    color: #888;
+    color: #58a6ff;
     opacity: 0;
-    padding: 0.2em 0.25em;
-    margin: -0.2em 0;
+    padding: 0.1rem 0.3rem;
     transition:
       opacity 0.15s ease,
       color 0.15s ease;
   }
 
-  :global(.content-container h1:hover a.heading-anchor-link),
-  :global(.content-container h2:hover a.heading-anchor-link) {
-    opacity: 1;
+  @media (hover: hover) {
+    :global(.content-container h1:hover a.heading-anchor-link),
+    :global(.content-container h2:hover a.heading-anchor-link) {
+      opacity: 1;
+    }
+    :global(a.heading-anchor-link:hover) {
+      color: #79c0ff;
+      text-decoration: underline;
+    }
   }
 
-  :global(a.heading-anchor-link:hover) {
-    color: #eee;
-    text-decoration: underline;
+  /* Tap to show on mobile */
+  :global(.content-container .anchor-visible a.heading-anchor-link) {
+    opacity: 1 !important;
+  }
+
+  .mobile-toc {
+    display: none;
+    background: rgba(13, 17, 23, 0.4);
+    border: 1px solid rgba(48, 54, 61, 0.4);
+    border-radius: 12px;
+    margin-bottom: 3rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .mobile-toc[open] {
+    background: rgba(13, 17, 23, 0.6);
+  }
+
+  .mobile-toc summary {
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: #c9d1d9;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    list-style: none; /* remove arrow */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-toc summary::after {
+    content: "▾";
+    font-size: 0.8rem;
+    opacity: 0.6;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-toc[open] summary::after {
+    transform: rotate(180deg);
+  }
+
+  .mobile-toc-content {
+    padding: 0 1.5rem 1.5rem;
+    border-top: 1px solid rgba(48, 54, 61, 0.2);
+    margin-top: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  @media (max-width: 1500px) {
+    .mobile-toc {
+      display: block;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .mobile-toc {
+      margin-bottom: 2rem;
+    }
+    .mobile-toc summary {
+      padding: 0.8rem 1.2rem;
+    }
+    .mobile-toc-content {
+      padding: 0 1.2rem 1.2rem;
+      padding-top: 0.8rem;
+    }
   }
 
   :global(.content-container ul) {
