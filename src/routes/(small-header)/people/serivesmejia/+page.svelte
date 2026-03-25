@@ -18,7 +18,10 @@
 
 <svelte:head>
     <title>Sebastian Erives - deltacv</title>
-    <meta name="description" content="Sebastian Erives is a software developer and founder of deltacv, building computer vision tools, Android apps, and Kotlin/Java developer experiences." />
+    <meta
+        name="description"
+        content="Sebastian Erives is a software developer and founder of deltacv, building computer vision tools, Android apps, and Kotlin/Java developer experiences."
+    />
 </svelte:head>
 
 {#if mounted}
@@ -32,7 +35,8 @@
                     <div class="education-badge" title="Universidad Tecmilenio">
                         <GraduationCap size={16} strokeWidth={2.5} />
                         <span>
-                            Software Engineer • Universidad Tecmilenio ('24&nbsp;-&nbsp;'28)
+                            Software Engineer • Universidad Tecmilenio
+                            ('24&nbsp;-&nbsp;'28)
                         </span>
                     </div>
                     <p class="bio">
@@ -120,10 +124,9 @@
 
                         <!-- The Grid -->
                         <div class="projects-grid">
-                            <!-- Project: Template -->
                             <PortfolioProject
-                                title="GeoWare Oddysey"
-                                description=""
+                                title="GeoWare Odyssey"
+                                description="10 custom Minecraft minigames for a live Twitch event with tens of thousands of concurrent viewers, built with Java, PaperMC, and a custom Fabric client mod."
                                 tags={[
                                     "Minecraft",
                                     "Java",
@@ -133,22 +136,71 @@
                             >
                                 <h3>About the Project</h3>
                                 <p>
-                                    Replace this text with information about
-                                    your client, your role in the development,
-                                    and the features you implemented.
+                                    GeoWare Odyssey was a three-day live
+                                    Minecraft event hosted by prominent Hispanic
+                                    streamer Aldo Geo, featuring well-known
+                                    creators like Roier, Juansguarnizo, and
+                                    Arigameplays. As part of a small team of
+                                    developers, I was brought in to build 10 of
+                                    the event's minigames, working under an
+                                    extremely tight deadline with the event
+                                    airing live in front of tens of thousands of
+                                    viewers.
                                 </p>
-
-                                <div class="actions">
-                                    <a
-                                        href="https://example.com"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="btn btn-primary">Live Demo</a
-                                    >
-                                </div>
+                                <p>
+                                    I designed and built my assigned minigames
+                                    in <strong>Java</strong> on top of
+                                    <strong>PaperMC</strong>, with one of them
+                                    communicating with a custom
+                                    <strong>Fabric</strong> client-side mod via plugin
+                                    messaging channels to sync player input in real
+                                    time.
+                                </p>
+                                <p>
+                                    Delivering this under a hard event deadline
+                                    meant prioritizing clear communication
+                                    within the team, making fast decisions under
+                                    pressure, and shipping working software on a
+                                    schedule that left no room for error — with
+                                    thousands of people watching live.
+                                </p>
                             </PortfolioProject>
 
-                            <!-- To add a new project, simply copy a <PortfolioProject> block above! -->
+                            <PortfolioProject
+                                title="MQTT Beacons"
+                                description="An Android app that scans for Bluetooth beacons and forwards their data to an MQTT broker in real time."
+                                tags={[
+                                    "Kotlin",
+                                    "Android",
+                                    "Compose",
+                                    "BLE",
+                                    "MQTT",
+                                ]}
+                            >
+                                <h3>About the Project</h3>
+                                <p>
+                                    Built for a freelance client, this Android
+                                    application scans for nearby Bluetooth Low
+                                    Energy beacons — both <strong>iBeacon</strong>
+                                    and <strong>Eddystone</strong> — and forwards
+                                    their telemetry data to a configurable
+                                    <strong>MQTT</strong> broker in real time. Each
+                                    beacon's distance, signal strength, GPS coordinates,
+                                    and battery level are published as messages to
+                                    a topic of the user's choice.
+                                </p>
+                                <p>
+                                    The app runs as a persistent <strong
+                                        >foreground service</strong
+                                    >
+                                    to keep scanning reliably in the background.
+                                    To handle connectivity gaps, I implemented a
+                                    local queue that retries failed messages
+                                    automatically once the network is restored.
+                                    The UI is built entirely with
+                                    <strong>Jetpack Compose</strong>.
+                                </p>
+                            </PortfolioProject>
                         </div>
                     </section>
 
@@ -426,7 +478,7 @@
         .projects-grid {
             grid-template-columns: repeat(2, 1fr);
         }
-        
+
         .education-badge {
             text-align: center;
             padding: 10px 18px;
