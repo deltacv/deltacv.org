@@ -8,7 +8,10 @@
         image = "",
         onclose,
         children,
+        imageFit = "cover" as "cover" | "contain" | "pan",
     } = $props();
+
+    let isVideo = $derived(image && /\.(mp4|webm|ogg|mov)$/i.test(image));
 
     function close() {
         if (onclose) onclose();
@@ -52,6 +55,9 @@
             class="modal-container"
             in:fly={{ y: 30, duration: 350, easing: cubicOut }}
             out:fly={{ y: 20, duration: 250 }}
+            style="--image-fit-object: {imageFit === 'pan'
+                ? 'cover'
+                : imageFit}"
             onclick={stopPropagation}
             role="dialog"
             aria-modal="true"
@@ -83,7 +89,24 @@
 
                 {#if image}
                     <div class="modal-hero">
-                        <img src={image} alt={title} />
+                        {#if isVideo}
+                            <video
+                                src={image}
+                                class:pan={imageFit === "pan"}
+                                autoplay
+                                loop
+                                muted
+                                playsinline
+                                controls
+                                aria-label={title}
+                            ></video>
+                        {:else}
+                            <img
+                                src={image}
+                                class:pan={imageFit === "pan"}
+                                alt={title}
+                            />
+                        {/if}
                     </div>
                 {/if}
 
@@ -195,11 +218,26 @@
         justify-content: center;
     }
 
-    .modal-hero img {
-        width: 100%;
+    .modal-hero img,
+    .modal-hero video {
+        width: 70%;
         max-height: 400px;
-        object-fit: cover;
+        object-fit: var(--image-fit-object, cover);
         display: block;
+    }
+
+    .modal-hero img.pan,
+    .modal-hero video.pan {
+        object-fit: contain;
+    }
+
+    @keyframes pan-vertical {
+        0% {
+            object-position: top;
+        }
+        100% {
+            object-position: bottom;
+        }
     }
 
     .modal-body {

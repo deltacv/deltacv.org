@@ -1,12 +1,17 @@
+import { R2Bucket } from '@cloudflare/workers-types';
+
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
 declare global {
 	namespace App {
 		interface Platform {
-			env: Env;
+			env: {
+				MEDIA: R2Bucket;
+			};
 			ctx: ExecutionContext;
 			caches: CacheStorage;
-			cf?: IncomingRequestCfProperties
+			cf?: IncomingRequestCfProperties,
+
 		}
 
 		// interface Error {}
@@ -16,4 +21,4 @@ declare global {
 	}
 }
 
-export {};
+export { };

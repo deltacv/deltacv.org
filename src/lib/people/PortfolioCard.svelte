@@ -7,10 +7,10 @@
         tags = [],
         href = null,
         onclick = undefined,
+        imageFit = "cover" as "cover" | "contain" | "pan",
     } = $props();
 
     let isHovering = $state(false);
-    let currentSrc = $derived(isHovering && hoverSrc ? hoverSrc : staticSrc);
 </script>
 
 <svelte:element
@@ -21,20 +21,67 @@
     class="portfolio-card"
     onmouseenter={() => (isHovering = true)}
     onmouseleave={() => (isHovering = false)}
+    style="--image-fit-object: {imageFit === 'pan' ? 'cover' : imageFit}"
     {onclick}
     aria-label={`View details for ${title}`}
 >
     <!-- Image Area -->
     <div class="image-container">
-        {#if currentSrc}
-            <img src={currentSrc} alt={title} loading="lazy" />
+        {#if staticSrc || hoverSrc}
+            {#if staticSrc}
+                <div class="media-layer base-layer" class:fade-out={isHovering && hoverSrc}>
+                    {#if /\.(mp4|webm|ogg|mov)$/i.test(staticSrc)}
+                        <video
+                            src={staticSrc}
+                            class:pan={imageFit === "pan"}
+                            autoplay
+                            loop
+                            muted
+                            playsinline
+                            disablePictureInPicture
+                            disableRemotePlayback
+                            controlsList="nodownload noplaybackrate noplaylist"
+                            aria-label={title}
+                        ></video>
+                    {:else}
+                        <img
+                            src={staticSrc}
+                            class:pan={imageFit === "pan"}
+                            alt={title}
+                            loading="lazy"
+                        />
+                    {/if}
+                </div>
+            {/if}
+
+            {#if hoverSrc}
+                <div class="media-layer hover-layer" class:visible={isHovering}>
+                    {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverSrc)}
+                        <video
+                            src={hoverSrc}
+                            class:pan={imageFit === "pan"}
+                            autoplay
+                            loop
+                            muted
+                            playsinline
+                            disablePictureInPicture
+                            disableRemotePlayback
+                            controlsList="nodownload noplaybackrate noplaylist"
+                            aria-label={title}
+                        ></video>
+                    {:else}
+                        <img
+                            src={hoverSrc}
+                            class:pan={imageFit === "pan"}
+                            alt={title}
+                            loading="lazy"
+                        />
+                    {/if}
+                </div>
+            {/if}
         {:else}
             <div class="placeholder-img"></div>
         {/if}
-
-        <div class="overlay">
-            <span class="view-more">Click to View More</span>
-        </div>
     </div>
 
     <div class="content">
@@ -90,18 +137,80 @@
     .image-container {
         position: relative;
         width: 100%;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         border-bottom: 1px solid #30363d;
+        background-color: #21262d;
     }
 
-    .portfolio-card img {
+    .media-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transition: opacity 0.5s ease;
+    }
+
+    .base-layer {
+        z-index: 1;
+        opacity: 1;
+    }
+
+    .hover-layer {
+        z-index: 2;
+        opacity: 0;
+    }
+
+    .fade-out {
+        opacity: 0;
+    }
+
+    .visible {
+        opacity: 1;
+    }
+
+    .portfolio-card img,
+    .portfolio-card video {
         display: block;
         width: 100%;
-        height: auto;
-        aspect-ratio: 16 / 9;
-        object-fit: cover;
-        background-color: #21262d;
+        height: 100%;
+        object-fit: var(--image-fit-object, cover);
+        object-position: var(--image-position, center);
         transition: transform 0.5s ease;
+        pointer-events: none;
+    }
+
+    .portfolio-card img.pan,
+    .portfolio-card video.pan {
+        object-fit: cover;
+        animation: pan-vertical 30s linear infinite;
+        transition: object-fit 0.3s ease;
+    }
+
+    .portfolio-card:hover img.pan,
+    .portfolio-card:hover video.pan,
+    .portfolio-card:focus-visible img.pan,
+    .portfolio-card:focus-visible video.pan {
+        animation: none;
+        object-fit: contain;
+    }
+
+    @keyframes pan-vertical {
+        0% {
+            object-position: top;
+            opacity: 0;
+        }
+        5% {
+            opacity: 1;
+        }
+        95% {
+            opacity: 1;
+        }
+        100% {
+            object-position: bottom;
+            opacity: 0;
+        }
     }
 
     .placeholder-img {
@@ -110,45 +219,9 @@
         background: linear-gradient(135deg, #21262d, #161b22);
     }
 
-    .portfolio-card:hover img {
+    .portfolio-card:hover img,
+    .portfolio-card:hover video {
         transform: scale(1.05);
-    }
-
-    .overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(13, 17, 23, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition:
-            opacity 0.3s ease,
-            background 0.3s ease;
-    }
-
-    .portfolio-card:hover .overlay {
-        opacity: 1;
-        background: rgba(13, 17, 23, 0.6);
-    }
-
-    .view-more {
-        background: rgba(0, 0, 0, 0.7);
-        color: #fff;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        border: 1px solid #484f58;
-        transform: translateY(10px);
-        transition: transform 0.3s ease;
-    }
-
-    .portfolio-card:hover .view-more {
-        transform: translateY(0);
     }
 
     .content {

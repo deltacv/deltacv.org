@@ -2,14 +2,17 @@
     import { fade } from "svelte/transition";
     import PortfolioProject from "$lib/people/PortfolioProject.svelte";
     import AuthorBlogPosts from "$lib/people/AuthorBlogPosts.svelte";
+    import Tabbed from "$lib/ui/Tabbed.svelte";
+    import Tab from "$lib/ui/Tab.svelte";
     import { onMount } from "svelte";
     import { GraduationCap } from "lucide-svelte";
     import GithubIcon from "$lib/icons/GithubIcon.svelte";
     import XIcon from "$lib/icons/XIcon.svelte";
     import LinkedinIcon from "$lib/icons/LinkedinIcon.svelte";
 
+    import { m } from "$lib/media";
+
     let mounted = $state(false);
-    let activeTab = $state("portfolio");
 
     onMount(() => {
         mounted = true;
@@ -93,31 +96,9 @@
                 </div>
             </header>
 
-            <!-- Tabs Navigation -->
-            <div class="tabs-container">
-                <button
-                    class="px-8 py-4 font-bold text-[1.1rem] transition-colors duration-200 border-b-[3px] {activeTab ===
-                    'portfolio'
-                        ? 'border-[#58a6ff] text-[#c9d1d9]'
-                        : 'border-transparent text-[#8b949e] hover:text-[#c9d1d9]'}"
-                    onclick={() => (activeTab = "portfolio")}
-                >
-                    Portfolio
-                </button>
-                <button
-                    class="px-8 py-4 font-bold text-[1.1rem] transition-colors duration-200 border-b-[3px] {activeTab ===
-                    'articles'
-                        ? 'border-[#58a6ff] text-[#c9d1d9]'
-                        : 'border-transparent text-[#8b949e] hover:text-[#c9d1d9]'}"
-                    onclick={() => (activeTab = "articles")}
-                >
-                    Articles
-                </button>
-            </div>
-
-            <!-- Tab Content -->
-            {#if activeTab === "portfolio"}
-                <div in:fade={{ duration: 300 }}>
+            <!-- Tabs System -->
+            <Tabbed>
+                <Tab title="Portfolio">
                     <!-- Freelance Section -->
                     <section class="projects-section">
                         <h2 class="section-title">Freelancing Portfolio</h2>
@@ -133,6 +114,7 @@
                                     "PaperMC",
                                     "Fabric",
                                 ]}
+                                image={m("geoware-video.mp4")}
                             >
                                 <h3>About the Project</h3>
                                 <p>
@@ -164,6 +146,16 @@
                                     schedule that left no room for error — with
                                     thousands of people watching live.
                                 </p>
+
+                                <div class="actions">
+                                    <a
+                                        href="https://github.com/serivesmejia/HexaGeoWareOddysey"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="btn btn-primary"
+                                        >View on GitHub (archive)</a
+                                    >
+                                </div>
                             </PortfolioProject>
 
                             <PortfolioProject
@@ -176,14 +168,19 @@
                                     "BLE",
                                     "MQTT",
                                 ]}
+                                image={m("mqttbeacons-screenshot.png")}
+                                imageFit="pan"
                             >
                                 <h3>About the Project</h3>
                                 <p>
                                     Built for a freelance client, this Android
                                     application scans for nearby Bluetooth Low
-                                    Energy beacons — both <strong>iBeacon</strong>
-                                    and <strong>Eddystone</strong> — and forwards
-                                    their telemetry data to a configurable
+                                    Energy beacons — both <strong
+                                        >iBeacon</strong
+                                    >
+                                    and <strong>Eddystone</strong> — and
+                                    forwards their telemetry data to a
+                                    configurable
                                     <strong>MQTT</strong> broker in real time. Each
                                     beacon's distance, signal strength, GPS coordinates,
                                     and battery level are published as messages to
@@ -195,9 +192,9 @@
                                     >
                                     to keep scanning reliably in the background.
                                     To handle connectivity gaps, I implemented a
-                                    local queue that retries failed messages
-                                    automatically once the network is restored.
-                                    The UI is built entirely with
+                                    local queue that retries failed messages automatically
+                                    once the network is restored. The UI is built
+                                    entirely with
                                     <strong>Jetpack Compose</strong>.
                                 </p>
                             </PortfolioProject>
@@ -217,6 +214,7 @@
                             <PortfolioProject
                                 title="PaperVision"
                                 description="A node-based visual programming environment for OpenCV. Solo developed over 3 years."
+                                hoverImage={m("papervision-hero.png")}
                                 tags={[
                                     "Kotlin",
                                     "Kotlin DSL",
@@ -264,6 +262,7 @@
                             <PortfolioProject
                                 title="EOCV-Sim"
                                 description="A standalone desktop simulator for testing FTC vision pipelines on PC. Scaled to support thousands of users."
+                                hoverImage={m("eocvsim-hero.png")}
                                 tags={["Java", "Swing", "Reflection", "OpenCV"]}
                             >
                                 <h3>My Role & Technical Challenges</h3>
@@ -305,6 +304,8 @@
                             <PortfolioProject
                                 title="The 'deltacv' Website"
                                 description="A custom developer portfolio and server-side rendered blog engine built from scratch."
+                                image={m("deltacv-org-video.mp4")}
+                                hoverImage={m("deltacv-page.png")}
                                 tags={[
                                     "SvelteKit",
                                     "TailwindCSS",
@@ -349,12 +350,12 @@
                             <!-- To add a new project, simply copy a <PortfolioProject> block above! -->
                         </div>
                     </section>
-                </div>
-            {:else if activeTab === "articles"}
-                <div in:fade={{ duration: 300 }}>
+                </Tab>
+
+                <Tab title="Articles">
                     <AuthorBlogPosts authorEmail="serivesmejia@deltacv.org" />
-                </div>
-            {/if}
+                </Tab>
+            </Tabbed>
         </div>
     </main>
 {/if}
@@ -427,17 +428,6 @@
         line-height: 1.6;
         color: #c9d1d9;
         margin: 0 0 2rem 0;
-    }
-
-    .tabs-container {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 2.5rem;
-        border-bottom: 1px solid #21262d;
-    }
-
-    .tabs-container button {
-        cursor: pointer;
     }
 
     /* Projects Section */

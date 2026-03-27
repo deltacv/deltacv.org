@@ -1,29 +1,70 @@
 <script>
     export let title = "Featured Title";
-    export let description = "This is a detailed description of the featured project.";
-    export let staticSrc = ""; 
-    export let hoverSrc = ""; 
-    export let href = "#"; 
+    export let description =
+        "This is a detailed description of the featured project.";
+    export let image = "";
+    export let hoverImage = "";
+    export let href = "#";
 
-    let currentSrc = staticSrc;
+    export let imageFit = "cover"; // "cover" or "contain"
+
     let isHovering = false;
-    $: currentSrc = isHovering ? hoverSrc : staticSrc;
 </script>
 
-<a  href={href} 
-    class="featured-card" 
-    on:mouseenter={() => isHovering = true}
-    on:mouseleave={() => isHovering = false}
+<a
+    {href}
+    class="featured-card"
+    on:mouseenter={() => (isHovering = true)}
+    on:mouseleave={() => (isHovering = false)}
     aria-label={title}
+    style="--image-fit: {imageFit};"
 >
     <!-- Left: Image -->
     <div class="image-container">
-        <img src={currentSrc} alt={title} loading="lazy" />
-        <div class="image-overlay">
-            <span class="view-btn">View Project</span>
+        <!-- Base Layer -->
+        <div
+            class="media-layer base-layer"
+            class:fade-out={isHovering && hoverImage}
+        >
+            {#if /\.(mp4|webm|ogg|mov)$/i.test(image)}
+                <video
+                    src={image}
+                    autoplay
+                    loop
+                    muted
+                    playsinline
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    controlsList="nodownload noplaybackrate noplaylist"
+                    aria-label={title}
+                ></video>
+            {:else}
+                <img src={image} alt={title} loading="lazy" />
+            {/if}
         </div>
+
+        <!-- Hover Layer -->
+        {#if hoverImage}
+            <div class="media-layer hover-layer" class:visible={isHovering}>
+                {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverImage)}
+                    <video
+                        src={hoverImage}
+                        autoplay
+                        loop
+                        muted
+                        playsinline
+                        disablePictureInPicture
+                        disableRemotePlayback
+                        controlsList="nodownload noplaybackrate noplaylist"
+                        aria-label={title}
+                    ></video>
+                {:else}
+                    <img src={hoverImage} alt={title} loading="lazy" />
+                {/if}
+            </div>
+        {/if}
     </div>
-    
+
     <!-- Right: Content -->
     <div class="content-container">
         <div class="badge">Featured Open Source</div>
@@ -36,10 +77,10 @@
 </a>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
     .featured-card {
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
         display: flex;
         flex-direction: row;
         width: 100%;
@@ -51,7 +92,10 @@
         overflow: hidden;
         cursor: pointer;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
         text-decoration: none;
         align-items: stretch;
     }
@@ -70,46 +114,45 @@
         background-color: #0d1117;
     }
 
-    .image-container img {
+    .media-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        transition: opacity 0.5s ease;
+    }
+
+    .base-layer {
+        z-index: 1;
+        opacity: 1;
+    }
+
+    .hover-layer {
+        z-index: 2;
+        opacity: 0;
+    }
+
+    .fade-out {
+        opacity: 0;
+    }
+
+    .visible {
+        opacity: 1;
+    }
+
+    .image-container img,
+    .image-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: var(--image-fit, cover);
         display: block;
         transition: transform 0.5s ease;
     }
 
-    .featured-card:hover .image-container img {
+    .featured-card:hover .image-container img,
+    .featured-card:hover .image-container video {
         transform: scale(1.03);
-    }
-
-    .image-overlay {
-        position: absolute;
-        inset: 0;
-        background: rgba(13, 17, 23, 0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .featured-card:hover .image-overlay {
-        opacity: 1;
-    }
-
-    .view-btn {
-        background: rgba(88, 166, 255, 0.9);
-        color: #fff;
-        font-weight: 600;
-        padding: 0.5rem 1.25rem;
-        border-radius: 9999px;
-        font-size: 0.95rem;
-        transform: translateY(10px);
-        transition: transform 0.3s ease;
-    }
-
-    .featured-card:hover .view-btn {
-        transform: translateY(0);
     }
 
     .content-container {

@@ -24,11 +24,13 @@
         margin: 0;
         padding: 0;
         color: #c9d1d9;
+        transition: transform 0.1s ease-out; /* Match spring responsiveness */
     }
 
     h1 {
         font-size: clamp(1.8rem, 3vw, 2.6rem);
         font-weight: 800;
+        transform: translate(var(--hx), var(--hy)) scale(var(--s));
     }
 
     p {
@@ -40,6 +42,7 @@
         white-space: nowrap; /* keeps it one line by default */
         overflow: hidden;
         text-overflow: ellipsis;
+        transform: translate(var(--px), var(--py)) scale(var(--s));
     }
 
     /* allow wrapping only when absolutely necessary */

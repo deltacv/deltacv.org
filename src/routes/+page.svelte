@@ -3,12 +3,17 @@
   import Navbar from "$lib/header/Navbar.svelte";
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
+
+  import { m } from "$lib/media";
+
   import Project from "$lib/projects/ProjectCard.svelte";
   import FeaturedProject from "$lib/projects/FeaturedProjectCard.svelte";
   import RecentBlogPosts from "$lib/blog/RecentBlogPosts.svelte";
+
   import eocvsim_img from "$lib/assets/eocvsim.png";
   import papervision_img from "$lib/assets/papervision.png";
   import papervision_gif from "$lib/assets/papervision.gif";
+
   import Footer from "$lib/footer/Footer.svelte";
   import { User } from "lucide-svelte";
 
@@ -33,8 +38,11 @@
 <svelte:window bind:scrollY />
 
 <svelte:head>
-  <title>deltacv - Computer Vision Tools for Java & Kotlin</title>
-  <meta name="description" content="deltacv builds developer tools and visual programming interfaces for computer vision — including PaperVision, a node-based OpenCV pipeline editor, and EOCV-Sim for FTC robotics." />
+  <title>deltacv - Computer Vision Tools</title>
+  <meta
+    name="description"
+    content="deltacv builds developer tools and visual programming interfaces for computer vision — including PaperVision, a node-based OpenCV pipeline editor, and EOCV-Sim for FTC robotics."
+  />
 </svelte:head>
 
 {#if ready}
@@ -53,8 +61,8 @@
         <FeaturedProject
           title="PaperVision"
           description="Create your custom OpenCV algorithms using a user-friendly visual interface inspired by industry-leading node editors. Built from the ground up to solve the steep learning curve of Computer Vision in Java & Python."
-          hoverSrc={papervision_img}
-          staticSrc={papervision_gif}
+          hoverImage={papervision_img}
+          image={papervision_gif}
           href="/papervision"
         />
       </div>
@@ -64,8 +72,9 @@
         <Project
           title="EOCV-Sim"
           description="Develop, test, and tune your EasyOpenCV pipelines directly on your computer with a simple interface!"
-          staticSrc={eocvsim_img}
-          hoverSrc={eocvsim_img}
+          image={m("eocvsim.png")}
+          hoverImage={m("eocvsim-tuner.mp4")}
+          imageFit="contain"
           href="/eocv-sim"
         />
 

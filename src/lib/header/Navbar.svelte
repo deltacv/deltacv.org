@@ -1,7 +1,7 @@
 <script lang="ts">
   export let visible = true;
   
-  import deltacv_logo from "$lib/assets/deltacv.svg";
+  import deltacv_logo from "$lib/icons/deltacv.svg";
   import { onMount } from "svelte";
   import { fade, slide, fly } from "svelte/transition";
   import { cubicOut, cubicIn } from "svelte/easing";

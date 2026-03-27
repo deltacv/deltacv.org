@@ -6,25 +6,14 @@
     // Dynamically import all author metadata files (relative path avoids glob group issues with (small-header))
     const authorModules = import.meta.glob("./*/author.ts", { eager: true });
 
-    // Dynamically import all author profile images
-    const authorImages = import.meta.glob(
-        "/src/lib/assets/people/**/*.{jpg,png,jpeg,webp,gif}",
-        { eager: true, query: "?url", import: "default" }
-    );
-
     const authors = Object.entries(authorModules).map(([path, mod]: [string, any]) => {
         // Extract the author folder name (e.g., 'serivesmejia')
         const folder = path.split("/").slice(-2, -1)[0];
         
-        // Find corresponding image: /src/lib/assets/people/[folder]/[folder].[ext]
-        const imagePath = Object.keys(authorImages).find((img) =>
-            img.includes(`${folder}/${folder}.`)
-        ) || "";
-        
         return {
             ...mod.author,
             href: `/people/${folder}`,
-            imageSrc: authorImages[imagePath] || "",
+            imageSrc: mod.author.profilePic || "",
         };
     });
 

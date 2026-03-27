@@ -7,12 +7,9 @@ tags: ["ftc", "history", "opencv"]
 ---
 
 <script>
-import eocvsim_old_img from "$lib/assets/blog/welcome/eocvsim-old.png"
 import eocvsim_img from "$lib/assets/eocvsim.png"
 
-import grip_img from "$lib/assets/blog/welcome/the-grip-user-interface.png"
-
-import papervision_img from "$lib/assets/papervision.gif"
+import { m } from "$lib/media"
 </script>
 
 # hello there!
@@ -34,7 +31,7 @@ The concept was simple: create a **simulated environment** where you can feed in
 **EOCV-Sim** does exactly that: it replicates parts of the EasyOpenCV and FTC SDK vision infrastructure in a desktop GUI, so you can run the same code you would deploy on the robot.
 
 <figure>
- <img src={eocvsim_old_img} width=500>
+ <img src={m("eocvsim-old.png")} width=500>
  <figcaption>An early version of EOCV-Sim</figcaption>
 </figure>
 
@@ -76,7 +73,7 @@ That was my experience while learning OpenCV. Even after building early versions
 WPILib’s GRIP helped make the learning curve easier. The Java code it produced was not great, but the tool did one thing well: it showed core computer vision steps in a visual way.
 
 <figure>
- <img src={grip_img} width=500>
+ <img src={m("the-grip-user-interface.png")} width=500>
  <figcaption>WPILib's GRIP - screenshot taken directly from their docs</figcaption>
 </figure>
 

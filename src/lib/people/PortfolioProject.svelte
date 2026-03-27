@@ -8,6 +8,7 @@
         image = "", 
         hoverImage = "", 
         tags = [],
+        imageFit = "cover" as "cover" | "contain" | "pan",
         children
     } = $props();
 
@@ -30,6 +31,7 @@
     staticSrc={image}
     hoverSrc={hoverImage}
     {tags}
+    {imageFit}
     onclick={openModal}
 />
 
@@ -38,6 +40,7 @@
     open={isOpen}
     {title}
     {image}
+    {imageFit}
     onclose={closeModal}
 >
     <!-- Render the snippet passed dynamically from page -->
