@@ -22,13 +22,15 @@
         y: number;
         ra: number;
         rs: number;
+        cosA: number;  // cached: Math.cos(-ra * PI/180)
+        sinA: number;  // cached: Math.sin(-ra * PI/180)
         startTime: number;
         strength: number;
         duration: number;
         subwaveIntensity: number;
         type: "click" | "trail";
-        maxRadius: number; // New: unique per ripple
-        intensity: number; // New: unique per ripple
+        maxRadius: number;
+        intensity: number;
     }
 
     let lastRippleX = 0;
@@ -40,9 +42,12 @@
     let rippleIdCounter = 0;
     let moveTimeout: any;
     let lastClickTime = 0;    // Rate-limit: min 800ms between click waves
+    let lastMotionTime = 0;   // Throttle: skip mousemove events faster than 16ms
     let rippleX = 0;
     let rippleY = 0;
     let frame: number;
+    let loopRunning = false;  // Idle-pause: track if RAF loop is active
+    let startLoop = () => {}; // Will be assigned in onMount
 
     let lerpVX = 0;
     let lerpVY = 0;
@@ -93,37 +98,27 @@
 
     $: if (massive && container) updateLayout();
 
-    function getTargetDisplacement(
-        elRelX: number,
-        elRelY: number,
-        now: number,
-    ) {
-        let targetX = 0;
-        let targetY = 0;
+    // Single-pass dual-element displacement (replaces two separate calls to getTargetDisplacement)
+    function computeDisplacements(now: number) {
+        let lx = 0, ly = 0, tx = 0, ty = 0;
 
-        // 1. Mouse-based displacement
+        // 1. Mouse-based displacement (shared math, applied to both elements)
         if (isNear && lastMousePosition) {
-            const dx = lastMousePosition.x - layout.centerX;
-            const dy = lastMousePosition.y - layout.centerY;
-            const distSq = dx * dx + dy * dy;
-            const distance = Math.sqrt(distSq);
+            const mdx = lastMousePosition.x - layout.centerX;
+            const mdy = lastMousePosition.y - layout.centerY;
+            const distance = Math.sqrt(mdx * mdx + mdy * mdy);
             const invDist = distance > 0 ? 1 / distance : 0;
-
-            const threshold = 800;
-            const strength = massive ? 25 : 18;
-            const norm = 1 - distance / threshold;
-            const factor = norm > 0 ? norm * norm * Math.sqrt(norm) : 0; // ~pow(1.2) without Math.pow
-
+            const norm = 1 - distance / 800;
+            const factor = norm > 0 ? norm * norm * Math.sqrt(norm) : 0;
             const amplitude = isMoving ? 4 : 0.5;
             const waveOffset = Math.sin(now / 280 - distance / 40) * amplitude;
-
-            targetX =
-                dx * invDist * (strength * factor + waveOffset) + lerpVX * 0.45;
-            targetY =
-                dy * invDist * (strength * factor + waveOffset) + lerpVY * 0.45;
+            const strength = massive ? 25 : 18;
+            const base = strength * factor + waveOffset;
+            lx = tx = mdx * invDist * base + lerpVX * 0.45;
+            ly = ty = mdy * invDist * base + lerpVY * 0.45;
         }
 
-        // 2. Click/Trail shockwave displacement
+        // 2. Ripple shockwave — single loop, update both elements
         for (let i = 0; i < clickRipples.length; i++) {
             const ripple = clickRipples[i];
             const age = now - ripple.startTime;
@@ -132,45 +127,50 @@
             const t = age / ripple.duration;
             const it = 1 - t;
             const waveRadius = (1 - it * it * it) * ripple.maxRadius;
+            const precomp = ripple.intensity * ripple.strength * it;
 
-            const dx = elRelX - ripple.x;
-            const dy = elRelY - ripple.y;
-            const rawDistSq = dx * dx + dy * dy;
-            if (rawDistSq < 1) continue;
-            const rawDist = Math.sqrt(rawDistSq);
-
-            // Ellipse transformation matching CSS
-            const angleRad = -ripple.ra * (Math.PI / 180);
-            const cosA = Math.cos(angleRad);
-            const sinA = Math.sin(angleRad);
-            const ldx = (dx * cosA - dy * sinA) / ripple.rs;
-            const ldy = (dx * sinA + dy * cosA) * 1.25; // 1/0.8
-
-            const dist = Math.sqrt(ldx * ldx + ldy * ldy);
-            const diff = dist - waveRadius;
-
-            let pushFactor = 0;
-            if (diff > 0 && diff < 150) {
-                const f = 1 - diff / 150;
-                pushFactor = f * f * 0.15;
-            } else if (diff <= 0 && diff > -350) {
-                const absDiff = -diff;
-                const f = 1 - absDiff / 350;
-                pushFactor = f * f;
-                if (ripple.type === "click") {
-                    pushFactor += Math.sin(absDiff / 35) * 0.12 * f;
+            // Logo element
+            const ldxL = layout.relLX - ripple.x;
+            const ldyL = layout.relLY - ripple.y;
+            const lRawSq = ldxL * ldxL + ldyL * ldyL;
+            if (lRawSq >= 1) {
+                const lRaw = Math.sqrt(lRawSq);
+                const lRotX = (ldxL * ripple.cosA - ldyL * ripple.sinA) / ripple.rs;
+                const lRotY = (ldxL * ripple.sinA + ldyL * ripple.cosA) * 1.25;
+                const lDist = Math.sqrt(lRotX * lRotX + lRotY * lRotY);
+                const lDiff = lDist - waveRadius;
+                let pL = 0;
+                if (lDiff > 0 && lDiff < 150) {
+                    const f = 1 - lDiff / 150; pL = f * f * 0.15;
+                } else if (lDiff <= 0 && lDiff > -350) {
+                    const a = -lDiff, f = 1 - a / 350;
+                    pL = f * f + (ripple.type === 'click' ? Math.sin(a / 35) * 0.12 * f : 0);
                 }
-            } else {
-                continue;
+                if (pL > 0) { const inv = precomp * pL / lRaw; lx += ldxL * inv; ly += ldyL * inv; }
             }
 
-            const force = ripple.intensity * ripple.strength * pushFactor * it;
-            const invRaw = 1 / rawDist;
-            targetX += dx * invRaw * force;
-            targetY += dy * invRaw * force;
+            // Text element
+            const tdxT = layout.relTX - ripple.x;
+            const tdyT = layout.relTY - ripple.y;
+            const tRawSq = tdxT * tdxT + tdyT * tdyT;
+            if (tRawSq >= 1) {
+                const tRaw = Math.sqrt(tRawSq);
+                const tRotX = (tdxT * ripple.cosA - tdyT * ripple.sinA) / ripple.rs;
+                const tRotY = (tdxT * ripple.sinA + tdyT * ripple.cosA) * 1.25;
+                const tDist = Math.sqrt(tRotX * tRotX + tRotY * tRotY);
+                const tDiff = tDist - waveRadius;
+                let pT = 0;
+                if (tDiff > 0 && tDiff < 150) {
+                    const f = 1 - tDiff / 150; pT = f * f * 0.15;
+                } else if (tDiff <= 0 && tDiff > -350) {
+                    const a = -tDiff, f = 1 - a / 350;
+                    pT = f * f + (ripple.type === 'click' ? Math.sin(a / 35) * 0.12 * f : 0);
+                }
+                if (pT > 0) { const inv = precomp * pT / tRaw; tx += tdxT * inv; ty += tdyT * inv; }
+            }
         }
 
-        return { x: targetX, y: targetY };
+        return { lx, ly, tx, ty };
     }
 
     function spawnRipple(
@@ -184,12 +184,15 @@
         if (!isNear) return;
 
         const id = rippleIdCounter++;
+        const angleRad = -rippleAngle * (Math.PI / 180);
         clickRipples.push({
             id,
             x: rippleX,
             y: rippleY,
             ra: rippleAngle,
             rs: 1 + rippleSpeed / 80,
+            cosA: Math.cos(angleRad),  // cache trig at spawn, not every frame
+            sinA: Math.sin(angleRad),
             startTime: Date.now(),
             strength,
             duration,
@@ -198,8 +201,8 @@
             maxRadius,
             intensity,
         });
-        // Trigger reactivity for the {#each} block
         clickRipples = clickRipples;
+        startLoop(); // Ensure loop is running when a ripple is spawned
         setTimeout(() => {
             const idx = clickRipples.findIndex((r) => r.id === id);
             if (idx !== -1) clickRipples.splice(idx, 1);
@@ -218,91 +221,65 @@
 
     function updateMotion(e?: MouseEvent | Event) {
         if (e instanceof MouseEvent) {
+            // Throttle: skip events faster than ~60fps to save CPU
+            const now = Date.now();
+            if (now - lastMotionTime < 16) return;
+            lastMotionTime = now;
+
             const mx = e.clientX;
             const my = e.clientY;
             lastMousePosition = { x: mx, y: my };
 
-            // Update isNear here (once per event, not twice per frame in getTargetDisplacement)
             const buffer = 120;
-            isNear =
-                my >= layout.rect.top - buffer &&
-                my <= layout.rect.bottom + buffer;
+            const wasNear = isNear;
+            isNear = my >= layout.rect.top - buffer && my <= layout.rect.bottom + buffer;
+            if (isNear && !wasNear) startLoop(); // Resume RAF when mouse enters header
 
-            if (lastX === 0 && lastY === 0) {
-                lastX = mx;
-                lastY = my;
-            }
+            if (lastX === 0 && lastY === 0) { lastX = mx; lastY = my; }
+            vx = mx - lastX; vy = my - lastY;
+            lastX = mx; lastY = my;
 
-            vx = mx - lastX;
-            vy = my - lastY;
-            lastX = mx;
-            lastY = my;
-
-            // Smooth orientation using lerped momentum vectors
             if (Math.sqrt(lerpVX * lerpVX + lerpVY * lerpVY) > 0.5) {
                 rippleAngle = Math.atan2(lerpVY, lerpVX) * (180 / Math.PI);
             }
-
             rippleSpeed = Math.sqrt(vx * vx + vy * vy);
 
             isMoving = true;
             clearTimeout(moveTimeout);
-            moveTimeout = setTimeout(() => {
-                isMoving = false;
-                vx = 0;
-                vy = 0;
-                rippleSpeed = 0;
-            }, 500);
+            moveTimeout = setTimeout(() => { isMoving = false; vx = 0; vy = 0; rippleSpeed = 0; }, 500);
 
             if (layout.rect.width) {
-                rippleX = e.clientX - layout.rect.left;
-                rippleY = e.clientY - layout.rect.top;
-
-                // Trail ripples: spawn only when moved 120+ px (avoids sqrt via squared check)
+                rippleX = mx - layout.rect.left;
+                rippleY = my - layout.rect.top;
                 const ddx = rippleX - lastRippleX;
                 const ddy = rippleY - lastRippleY;
-                if (ddx * ddx + ddy * ddy > 14400 && isNear) { // 120² = 14400
-                    spawnRipple(0.04, 600, 0, "trail", 450, 35);
+                if (ddx * ddx + ddy * ddy > 48400 && isNear) { // 220² = 48400
+                    spawnRipple(0.5, 1400, 0, "trail", 450, 50);
                     lastRippleX = rippleX;
                     lastRippleY = rippleY;
                 }
             }
         } else {
-            // Decay
-            vx *= 0.85;
-            vy *= 0.85;
-            rippleSpeed *= 0.85;
+            vx *= 0.85; vy *= 0.85; rippleSpeed *= 0.85;
         }
 
-        // Apply momentum lerping
         lerpVX += (vx - lerpVX) * 0.1;
         lerpVY += (vy - lerpVY) * 0.1;
 
         const scrollDelta = window.scrollY - lastScrollY;
-        const scrollImpulse = Math.min(Math.max(scrollDelta * 0.08, -10), 10);
-        lerpScroll += (scrollImpulse - lerpScroll) * 0.1;
+        lerpScroll += (Math.min(Math.max(scrollDelta * 0.08, -10), 10) - lerpScroll) * 0.1;
 
         if (layout.rect.width) {
             const now = Date.now();
-            // Short-circuit: if idle and no ripples, just decay springs to zero
             if (!isNear && clickRipples.length === 0) {
                 dispLogo.set({ x: 0, y: lerpScroll });
                 dispH1.set({ x: 0, y: lerpScroll });
                 dispP.set({ x: 0, y: lerpScroll });
             } else {
-                const logoDisp = getTargetDisplacement(
-                    layout.relLX,
-                    layout.relLY,
-                    now,
-                );
-                const textDisp = getTargetDisplacement(
-                    layout.relTX,
-                    layout.relTY,
-                    now,
-                );
-                dispLogo.set({ x: logoDisp.x, y: logoDisp.y + lerpScroll });
-                dispH1.set({ x: textDisp.x, y: textDisp.y + lerpScroll });
-                dispP.set({ x: textDisp.x, y: textDisp.y + lerpScroll });
+                const { lx, ly, tx, ty } = computeDisplacements(now);
+                dispLogo.set({ x: lx, y: ly + lerpScroll });
+                dispH1.set({ x: tx, y: ty + lerpScroll });
+                dispP.set({ x: tx, y: ty + lerpScroll });
             }
         }
 
@@ -310,38 +287,51 @@
     }
 
     onMount(() => {
-        const loop = () => {
-            // Performance: only run logic if something is happening (active ripples OR movement)
-            if (
-                isActive &&
-                (isNear ||
-                    rippleSpeed > 0.1 ||
-                    clickRipples.length > 0 ||
-                    Math.abs(window.scrollY - lastScrollY) > 1)
-            ) {
+        // Idle-pause: only run RAF loop when there's something to animate
+        function loop() {
+            if (!isActive) { loopRunning = false; return; }
+            const active = isNear || rippleSpeed > 0.1 || clickRipples.length > 0 || Math.abs(window.scrollY - lastScrollY) > 1;
+            if (active) {
                 updateMotion();
+                frame = requestAnimationFrame(loop);
+            } else {
+                // Nothing to animate — pause until next mouse/scroll/click
+                loopRunning = false;
             }
-            frame = requestAnimationFrame(loop);
+        }
+
+        // Assign the real startLoop implementation (module var, accessible to spawnRipple/updateMotion)
+        startLoop = function() {
+            if (!loopRunning && isActive) {
+                loopRunning = true;
+                frame = requestAnimationFrame(loop);
+            }
         };
+
+        function onScroll() { startLoop(); updateMotion(); }
 
         const timer = setTimeout(() => {
             isActive = true;
             lastScrollY = window.scrollY;
             updateLayout();
             window.addEventListener("resize", updateLayout);
-            window.addEventListener("mousemove", updateMotion);
-            window.addEventListener("scroll", () => updateMotion());
+            // passive:true: browser won't wait before scrolling
+            window.addEventListener("mousemove", updateMotion, { passive: true });
+            window.addEventListener("scroll", onScroll, { passive: true });
             window.addEventListener("mousedown", triggerClickRipple);
-            frame = requestAnimationFrame(loop);
+            startLoop();
         }, 3500);
 
         return () => {
             clearTimeout(timer);
             clearTimeout(moveTimeout);
             if (frame) cancelAnimationFrame(frame);
+            isActive = false;
+            loopRunning = false;
+            startLoop = () => {}; // Reset to noop on cleanup
             window.removeEventListener("resize", updateLayout);
             window.removeEventListener("mousemove", updateMotion);
-            window.removeEventListener("scroll", () => updateMotion());
+            window.removeEventListener("scroll", onScroll);
             window.removeEventListener("mousedown", triggerClickRipple);
         };
     });
@@ -358,14 +348,7 @@
         --s: {$scale}; --rx: {rippleX}px; --ry: {rippleY}px; 
         --ra: {rippleAngle}deg; --rs: {1 + rippleSpeed / 80};"
 >
-    <!-- Mouse tracking ripples -->
-    <div class="ripples" class:visible={isNear && isMoving}>
-        <div class="ripple"></div>
-        <div class="ripple" style="animation-delay: 0.8s;"></div>
-        <div class="ripple" style="animation-delay: 1.6s;"></div>
-    </div>
-
-    <!-- Independent click ripples (fixes double translation) -->
+    <!-- Ripples: click + trail (all spawn-based, fixed position & angle) -->
     {#each clickRipples as ripple (ripple.id)}
         <div
             class="ripple violent {ripple.type}"
@@ -392,49 +375,6 @@
         will-change: transform;
     }
 
-    .ripples {
-        position: absolute;
-        left: var(--rx);
-        top: var(--ry);
-        transform: translate(-50%, -50%) rotate(var(--ra)) scaleX(var(--rs));
-        pointer-events: none;
-        z-index: -1;
-        opacity: 0;
-        transition:
-            opacity 0.8s ease,
-            transform 0.4s ease-out; /* Faster exit when leaving header */
-    }
-
-    .ripples.visible {
-        opacity: 0.15; /* Even subtler for global header interaction */
-    }
-
-    .ripple {
-        position: absolute;
-        width: 70px;
-        height: 50px;
-        border: 1.5px solid rgba(88, 166, 255, 0.6);
-        border-radius: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        animation: pulse 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
-        filter: none;
-    }
-
-    @keyframes pulse {
-        0% {
-            transform: translate(-50%, -50%) scale(0.2);
-            opacity: 0;
-            border-width: 4px;
-        }
-        20% {
-            opacity: 0.8;
-        }
-        100% {
-            transform: translate(-50%, -50%) scale(8);
-            opacity: 0;
-            border-width: 1px;
-        }
-    }
 
     .icon {
         width: 2.4em;
@@ -538,7 +478,8 @@
             0 0 0 25px rgba(121, 192, 255, calc(0.05 * var(--st)));
     }
     .ripple.violent.trail {
-        box-shadow: none; /* Keep trails extremely clean */
-        border-color: rgba(121, 192, 255, calc(0.1 * var(--st)));
+        /* Directional oval — inherits pulse-violent; --ra/--rs frozen at spawn */
+        border-color: rgba(121, 192, 255, 0.2);
+        box-shadow: none;
     }
 </style>
