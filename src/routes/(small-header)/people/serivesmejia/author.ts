@@ -1,8 +1,8 @@
-import { media } from "$lib/media";
+import { m } from "$lib/media";
 
 export const author = {
     name: "Sebastian Erives",
-    profilePic: media.people.serivesmejia.profile,
+    profilePic: m("people/serivesmejia/profile.jpg"),
     shortSlash: "erives",
     email: "serivesmejia@deltacv.org",
     description: "Software Developer - Founder of deltacv",

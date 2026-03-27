@@ -20,8 +20,8 @@ export const GET = async ({ params, platform }: RequestEvent) => {
     return new Response(file.body, {
         headers: {
             'Content-Type': file.httpMetadata?.contentType ?? 'application/octet-stream',
-            // Max age tells Cloudflare to cache images for 1 hour
-            'Cache-Control': 'public, max-age=3600'
+            'Cache-Control': 'public, max-age=3600',
+            'CDN-Cache-Control': 'public, max-age=86400'
         }
     });
 };

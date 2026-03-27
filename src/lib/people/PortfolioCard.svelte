@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { lazyVideo } from "$lib/actions/lazyVideo";
+
     let {
         title = "Project Title",
         description = "A short description of the project.",
@@ -29,18 +31,22 @@
     <div class="image-container">
         {#if staticSrc || hoverSrc}
             {#if staticSrc}
-                <div class="media-layer base-layer" class:fade-out={isHovering && hoverSrc}>
+                <div
+                    class="media-layer base-layer"
+                    class:fade-out={isHovering && hoverSrc}
+                >
                     {#if /\.(mp4|webm|ogg|mov)$/i.test(staticSrc)}
                         <video
                             src={staticSrc}
                             class:pan={imageFit === "pan"}
-                            autoplay
+                            use:lazyVideo
                             loop
                             muted
                             playsinline
                             disablePictureInPicture
                             disableRemotePlayback
                             controlsList="nodownload noplaybackrate noplaylist"
+                            preload="none"
                             aria-label={title}
                         ></video>
                     {:else}
@@ -60,13 +66,14 @@
                         <video
                             src={hoverSrc}
                             class:pan={imageFit === "pan"}
-                            autoplay
+                            use:lazyVideo
                             loop
                             muted
                             playsinline
                             disablePictureInPicture
                             disableRemotePlayback
                             controlsList="nodownload noplaybackrate noplaylist"
+                            preload="none"
                             aria-label={title}
                         ></video>
                     {:else}

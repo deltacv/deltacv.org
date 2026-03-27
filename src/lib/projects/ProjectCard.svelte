@@ -1,37 +1,42 @@
 <script>
-    import { quintOut } from 'svelte/easing';
-    
+    import { lazyVideo } from "$lib/actions/lazyVideo";
+    import { quintOut } from "svelte/easing";
+
     export let title = "Card Title";
     export let description = "This is the description that appears on hover.";
-    export let image = "/path/to/static-image.jpg"; 
-    export let hoverImage = ""; 
-    export let href = "#"; 
+    export let image = "/path/to/static-image.jpg";
+    export let hoverImage = "";
+    export let href = "#";
 
     export let imageFit = "cover"; // "cover" (fill) or "contain" (fit)
-    
+
     let isHovering = false;
 </script>
 
-<a 
-    href={href} 
-    class="card" 
-    on:mouseenter={() => isHovering = true}
-    on:mouseleave={() => isHovering = false}
+<a
+    {href}
+    class="card"
+    on:mouseenter={() => (isHovering = true)}
+    on:mouseleave={() => (isHovering = false)}
     aria-label={title}
     style="--image-fit: {imageFit};"
 >
     <div class="image-container">
         <!-- Base Layer -->
-        <div class="media-layer base-layer" class:fade-out={isHovering && hoverImage}>
+        <div
+            class="media-layer base-layer"
+            class:fade-out={isHovering && hoverImage}
+        >
             {#if /\.(mp4|webm|ogg|mov)$/i.test(image)}
                 <video
                     src={image}
-                    autoplay
+                    use:lazyVideo
                     loop
                     muted
                     playsinline
                     disablePictureInPicture
                     disableRemotePlayback
+                    preload="none"
                     controlsList="nodownload noplaybackrate noplaylist"
                     aria-label={title}
                 ></video>
@@ -46,13 +51,14 @@
                 {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverImage)}
                     <video
                         src={hoverImage}
-                        autoplay
+                        use:lazyVideo
                         loop
                         muted
                         playsinline
                         disablePictureInPicture
                         disableRemotePlayback
                         controlsList="nodownload noplaybackrate noplaylist"
+                        preload="none"
                         aria-label={title}
                     ></video>
                 {:else}
@@ -61,7 +67,7 @@
             </div>
         {/if}
     </div>
-    
+
     <div class="footer">
         <div class="footer-content">
             <h2>{title}</h2>
@@ -73,10 +79,10 @@
 </a>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap");
 
     .card {
-        font-family: 'Inter', sans-serif;
+        font-family: "Inter", sans-serif;
         position: relative;
         width: 100%;
         border-radius: 12px;
@@ -87,7 +93,10 @@
         background-color: #161b22;
         border: 1px solid #30363d;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.2s ease;
         text-decoration: none;
     }
 
@@ -96,11 +105,11 @@
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
         border-color: #484f58;
     }
-    
+
     .image-container {
         position: relative;
         width: 100%;
-        aspect-ratio: 16 / 9; 
+        aspect-ratio: 16 / 9;
         overflow: hidden;
         background-color: #21262d;
     }
@@ -174,7 +183,7 @@
         font-size: 1.1rem;
         font-weight: 600;
         transition: color 0.3s ease;
-        line-height: 60px; 
+        line-height: 60px;
         height: 60px;
         text-align: center;
         width: 100%;
@@ -185,7 +194,7 @@
     }
 
     .description-container {
-        height: 60px; 
+        height: 60px;
         width: 100%;
         display: flex;
         align-items: center;

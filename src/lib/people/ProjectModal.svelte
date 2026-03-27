@@ -1,6 +1,7 @@
 <script lang="ts">
     import { fade, fly } from "svelte/transition";
     import { cubicOut } from "svelte/easing";
+    import { lazyVideo } from "$lib/actions/lazyVideo";
 
     let {
         open = false,
@@ -93,11 +94,12 @@
                             <video
                                 src={image}
                                 class:pan={imageFit === "pan"}
-                                autoplay
+                                use:lazyVideo
                                 loop
                                 muted
                                 playsinline
                                 controls
+                                preload="none"
                                 aria-label={title}
                             ></video>
                         {:else}

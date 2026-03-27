@@ -14,5 +14,11 @@
   "preview_urls": true,
   "observability": {
     "enabled": true
-  }
+  },
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "deltacv-assets"
+    }
+  ]
 }

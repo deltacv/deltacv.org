@@ -1,4 +1,6 @@
 <script>
+    import { lazyVideo } from "$lib/actions/lazyVideo";
+
     export let title = "Featured Title";
     export let description =
         "This is a detailed description of the featured project.";
@@ -29,12 +31,13 @@
             {#if /\.(mp4|webm|ogg|mov)$/i.test(image)}
                 <video
                     src={image}
-                    autoplay
+                    use:lazyVideo
                     loop
                     muted
                     playsinline
                     disablePictureInPicture
                     disableRemotePlayback
+                    preload="none"
                     controlsList="nodownload noplaybackrate noplaylist"
                     aria-label={title}
                 ></video>
@@ -49,13 +52,14 @@
                 {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverImage)}
                     <video
                         src={hoverImage}
-                        autoplay
+                        use:lazyVideo
                         loop
                         muted
                         playsinline
                         disablePictureInPicture
                         disableRemotePlayback
                         controlsList="nodownload noplaybackrate noplaylist"
+                        preload="none"
                         aria-label={title}
                     ></video>
                 {:else}

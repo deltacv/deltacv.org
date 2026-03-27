@@ -116,7 +116,7 @@ EOCV-Sim began as a quick fix for a very specific problem. Now I am building som
 PaperVision feels like the tool I wish I had when I first learned OpenCV — a mix of visual clarity and code freedom.
 
 <figure>
- <img src={m("papervision-in-action.png")} width=500>
+ <img src={m("papervision.gif")} width=500>
  <figcaption>PaperVision in action</figcaption>
 </figure>
 
