@@ -41,7 +41,7 @@ On top of that, **workspaces** turned the simulator into a standalone app that c
 Suddenly, what once required long edit-compile-test-repeat cycles, could now happen almost instantly. The simulator started to feel like a live lab for building vision pipelines.
 
 <figure>
- <img src={eocvsim_img} width=500>
+ <img src={m("/eocvsim.png")} width=500>
  <figcaption>Thankfully, I soon learned what FlatLaf could do for a Swing UI.</figcaption>
 </figure>
 
@@ -74,7 +74,7 @@ WPILib’s GRIP helped make the learning curve easier. The Java code it produced
 
 <figure>
  <img src={m("the-grip-user-interface.png")} width=500>
- <figcaption>WPILib's GRIP - screenshot taken directly from their docs</figcaption>
+ <figcaption>WPILib's GRIP - image taken directly from their old docs</figcaption>
 </figure>
 
 I have never been a fan of visual programming tools. Blocks in FTC, for example, can turn complex ideas like field-centric drive or odometry into a mess of unreadable, composed blocks of trigonometry.
@@ -116,7 +116,7 @@ EOCV-Sim began as a quick fix for a very specific problem. Now I am building som
 PaperVision feels like the tool I wish I had when I first learned OpenCV — a mix of visual clarity and code freedom.
 
 <figure>
- <img src={papervision_img} width=500>
+ <img src={m("papervision-in-action.png")} width=500>
  <figcaption>PaperVision in action</figcaption>
 </figure>
 

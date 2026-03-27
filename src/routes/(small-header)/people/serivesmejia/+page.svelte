@@ -214,7 +214,7 @@
                             <PortfolioProject
                                 title="PaperVision"
                                 description="A node-based visual programming environment for OpenCV. Solo developed over 3 years."
-                                hoverImage={m("papervision-hero.png")}
+                                image={m("papervision-hero.png")}
                                 tags={[
                                     "Kotlin",
                                     "Kotlin DSL",
@@ -262,7 +262,7 @@
                             <PortfolioProject
                                 title="EOCV-Sim"
                                 description="A standalone desktop simulator for testing FTC vision pipelines on PC. Scaled to support thousands of users."
-                                hoverImage={m("eocvsim-hero.png")}
+                                image={m("eocvsim-hero.png")}
                                 tags={["Java", "Swing", "Reflection", "OpenCV"]}
                             >
                                 <h3>My Role & Technical Challenges</h3>
