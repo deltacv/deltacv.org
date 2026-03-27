@@ -15,9 +15,6 @@
   "observability": {
     "enabled": true
   },
-  "vars": {
-    "PUBLIC_MEDIA_BASE": "https://media.deltacv.com"
-  },
   "r2_buckets": [
     {
       "binding": "MEDIA",
