@@ -3,9 +3,6 @@
     import { fade } from "svelte/transition";
     import Feature from "$lib/projects/Feature.svelte";
 
-    import eocvsim_img from "$lib/assets/eocvsim.png";
-    import eocvsim_1_img from "$lib/assets/eocvsim-tuner.gif";
-
     import { Splide, SplideSlide } from "@splidejs/svelte-splide";
 
     import "@splidejs/svelte-splide/css";
@@ -19,6 +16,7 @@
         Tag,
         Video,
     } from "lucide-svelte";
+    import { m } from "$lib/media";
 
     // 4. OPCIONES DEL CARRUSEL
     const splideOptions = {
@@ -66,7 +64,10 @@
 
 <svelte:head>
     <title>EOCV-Sim - deltacv</title>
-    <meta name="description" content="EOCV-Sim is a desktop simulator for EasyOpenCV — develop, test, and tune your FTC robotics vision pipelines directly on your computer without touching the robot." />
+    <meta
+        name="description"
+        content="EOCV-Sim is a desktop simulator for EasyOpenCV — develop, test, and tune your FTC robotics vision pipelines directly on your computer without touching the robot."
+    />
 </svelte:head>
 
 <div class="project-page-wrapper">
@@ -143,7 +144,7 @@
                     <SplideSlide class="flex items-center">
                         <figure>
                             <img
-                                src={eocvsim_img}
+                                src={m("eocvsim.png")}
                                 alt="EOCV-Sim main user interface"
                                 class="rounded-lg shadow-2xl shadow-cyan-900/20 border border-gray-700"
                             />
@@ -156,7 +157,7 @@
                     <SplideSlide class="flex items-center">
                         <figure>
                             <img
-                                src={eocvsim_1_img}
+                                src={m("eocvsim-tuner.gif")}
                                 alt="EOCV-Sim variable tuner"
                                 class="rounded-lg shadow-2xl shadow-cyan-900/20 border border-gray-700"
                             />

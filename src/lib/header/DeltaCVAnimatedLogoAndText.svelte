@@ -78,21 +78,22 @@
         const rect = container.getBoundingClientRect();
         const logoRect = logoEl.getBoundingClientRect();
         const textRect = textEl.getBoundingClientRect();
+        const sx = window.scrollX, sy = window.scrollY;
 
         layout = {
             rect: {
-                left: rect.left,
-                top: rect.top,
+                left: rect.left + sx,
+                top: rect.top + sy,
                 width: rect.width,
                 height: rect.height,
-                bottom: rect.bottom,
+                bottom: rect.bottom + sy,
             },
             relLX: logoRect.left + logoRect.width / 2 - rect.left,
             relLY: logoRect.top + logoRect.height / 2 - rect.top,
             relTX: textRect.left + textRect.width / 2 - rect.left,
             relTY: textRect.top + textRect.height / 2 - rect.top,
-            centerX: rect.left + rect.width / 2,
-            centerY: rect.top + rect.height / 2,
+            centerX: rect.left + sx + rect.width / 2,
+            centerY: rect.top + sy + rect.height / 2,
         };
     }
 
@@ -226,8 +227,8 @@
             if (now - lastMotionTime < 16) return;
             lastMotionTime = now;
 
-            const mx = e.clientX;
-            const my = e.clientY;
+            const mx = e.pageX;
+            const my = e.pageY;
             lastMousePosition = { x: mx, y: my };
 
             const buffer = 120;

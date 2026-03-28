@@ -9,6 +9,7 @@
     export let href = "#";
 
     export let imageFit = "cover"; // "cover" or "contain"
+    export let hoverImageFit = ""; // defaults to imageFit if empty
 
     let isHovering = false;
 </script>
@@ -19,7 +20,7 @@
     on:mouseenter={() => (isHovering = true)}
     on:mouseleave={() => (isHovering = false)}
     aria-label={title}
-    style="--image-fit: {imageFit};"
+    style="--image-fit: {imageFit === 'fit' ? 'contain' : (imageFit === 'fill' ? 'cover' : imageFit)}; --hover-image-fit: {(hoverImageFit || imageFit) === 'fit' ? 'contain' : ((hoverImageFit || imageFit) === 'fill' ? 'cover' : (hoverImageFit || imageFit))};"
 >
     <!-- Left: Image -->
     <div class="image-container">
@@ -52,7 +53,10 @@
                 {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverImage)}
                     <video
                         src={hoverImage}
-                        use:lazyVideo
+                        use:lazyVideo={{
+                            shouldPlay: isHovering,
+                            resetOnPause: true,
+                        }}
                         loop
                         muted
                         playsinline
@@ -145,11 +149,20 @@
         opacity: 1;
     }
 
-    .image-container img,
-    .image-container video {
+    .base-layer img,
+    .base-layer video {
         width: 100%;
         height: 100%;
         object-fit: var(--image-fit, cover);
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .hover-layer img,
+    .hover-layer video {
+        width: 100%;
+        height: 100%;
+        object-fit: var(--hover-image-fit, cover);
         display: block;
         transition: transform 0.5s ease;
     }
@@ -223,7 +236,8 @@
             border-top: 1px solid #21262d;
             padding: 2rem;
         }
-        .image-container img {
+        .image-container {
+            width: 100%;
             aspect-ratio: 16 / 9;
         }
     }

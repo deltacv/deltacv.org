@@ -9,7 +9,7 @@
         image = "",
         onclose,
         children,
-        imageFit = "cover" as "cover" | "contain" | "pan",
+        imageFit = "cover" as "cover" | "contain" | "pan" | "fit" | "fill",
     } = $props();
 
     let isVideo = $derived(image && /\.(mp4|webm|ogg|mov)$/i.test(image));
@@ -56,9 +56,7 @@
             class="modal-container"
             in:fly={{ y: 30, duration: 350, easing: cubicOut }}
             out:fly={{ y: 20, duration: 250 }}
-            style="--image-fit-object: {imageFit === 'pan'
-                ? 'cover'
-                : imageFit}"
+            style="--image-fit-object: {imageFit === 'fit' ? 'contain' : (imageFit === 'fill' ? 'cover' : (imageFit === 'pan' ? 'cover' : imageFit))}"
             onclick={stopPropagation}
             role="dialog"
             aria-modal="true"

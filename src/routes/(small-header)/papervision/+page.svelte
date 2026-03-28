@@ -3,9 +3,7 @@
     import { fade } from "svelte/transition";
     import Feature from "$lib/projects/Feature.svelte";
 
-    // 1. IMPORTAMOS IMÁGENES
-    import papervision_nodes_img from "$lib/assets/papervision-1.gif";
-    import papervision_nodes_1_img from "$lib/assets/papervision.gif";
+    import { m } from "$lib/media";
 
     // 2. IMPORTAMOS SVELTESPLIDE (El carrusel)
     import { Splide, SplideSlide } from "@splidejs/svelte-splide";
@@ -69,7 +67,10 @@
 
 <svelte:head>
     <title>PaperVision - deltacv</title>
-    <meta name="description" content="PaperVision is a node-based visual editor for OpenCV pipelines. Prototype, tune, and export complex computer vision algorithms without writing a single line of code." />
+    <meta
+        name="description"
+        content="PaperVision is a node-based visual editor for OpenCV pipelines. Prototype, tune, and export complex computer vision algorithms without writing a single line of code."
+    />
 </svelte:head>
 
 <div class="project-page-wrapper">
@@ -141,7 +142,7 @@
                 <SplideSlide class="flex items-center">
                     <figure>
                         <img
-                            src={papervision_nodes_1_img}
+                            src={m("papervision-1.gif")}
                             alt="PaperVision node-based editor"
                             class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700"
                         />
@@ -154,7 +155,7 @@
                 <SplideSlide class="flex items-center">
                     <figure>
                         <img
-                            src={papervision_nodes_img}
+                            src={m("papervision.gif")}
                             alt="GIF of PaperVision's node editor in action"
                             class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700"
                         />

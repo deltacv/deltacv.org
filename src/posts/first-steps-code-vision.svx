@@ -7,8 +7,6 @@ tags: ["ftc", "history", "opencv"]
 ---
 
 <script>
-import eocvsim_img from "$lib/assets/eocvsim.png"
-
 import { m } from "$lib/media"
 </script>
 

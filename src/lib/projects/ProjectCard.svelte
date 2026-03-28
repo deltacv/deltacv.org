@@ -9,6 +9,7 @@
     export let href = "#";
 
     export let imageFit = "cover"; // "cover" (fill) or "contain" (fit)
+    export let hoverImageFit = ""; // defaults to imageFit if empty
 
     let isHovering = false;
 </script>
@@ -19,7 +20,7 @@
     on:mouseenter={() => (isHovering = true)}
     on:mouseleave={() => (isHovering = false)}
     aria-label={title}
-    style="--image-fit: {imageFit};"
+    style="--image-fit: {imageFit === 'fit' ? 'contain' : (imageFit === 'fill' ? 'cover' : imageFit)}; --hover-image-fit: {(hoverImageFit || imageFit) === 'fit' ? 'contain' : ((hoverImageFit || imageFit) === 'fill' ? 'cover' : (hoverImageFit || imageFit))};"
 >
     <div class="image-container">
         <!-- Base Layer -->
@@ -51,7 +52,10 @@
                 {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverImage)}
                     <video
                         src={hoverImage}
-                        use:lazyVideo
+                        use:lazyVideo={{
+                            shouldPlay: isHovering,
+                            resetOnPause: true,
+                        }}
                         loop
                         muted
                         playsinline
@@ -141,12 +145,21 @@
         opacity: 1;
     }
 
-    .card img,
-    .card video {
+    .base-layer img,
+    .base-layer video {
         display: block;
         width: 100%;
         height: 100%;
         object-fit: var(--image-fit, cover);
+        transition: transform 0.5s ease;
+    }
+
+    .hover-layer img,
+    .hover-layer video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: var(--hover-image-fit, cover);
         transition: transform 0.5s ease;
     }
 

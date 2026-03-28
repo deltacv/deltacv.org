@@ -9,7 +9,8 @@
         tags = [],
         href = null,
         onclick = undefined,
-        imageFit = "cover" as "cover" | "contain" | "pan",
+        imageFit = "cover" as "cover" | "contain" | "pan" | "fit" | "fill",
+        hoverImageFit = "" as "cover" | "contain" | "pan" | "fit" | "fill" | "",
     } = $props();
 
     let isHovering = $state(false);
@@ -23,7 +24,7 @@
     class="portfolio-card"
     onmouseenter={() => (isHovering = true)}
     onmouseleave={() => (isHovering = false)}
-    style="--image-fit-object: {imageFit === 'pan' ? 'cover' : imageFit}"
+    style="--image-fit-object: {imageFit === 'fit' ? 'contain' : (imageFit === 'fill' ? 'cover' : (imageFit === 'pan' ? 'cover' : imageFit))}; --hover-image-fit-object: {((hoverImageFit || imageFit) === 'fit' ? 'contain' : ((hoverImageFit || imageFit) === 'fill' ? 'cover' : ((hoverImageFit || imageFit) === 'pan' ? 'cover' : (hoverImageFit || imageFit))))};"
     {onclick}
     aria-label={`View details for ${title}`}
 >
@@ -66,7 +67,10 @@
                         <video
                             src={hoverSrc}
                             class:pan={imageFit === "pan"}
-                            use:lazyVideo
+                            use:lazyVideo={{
+                                shouldPlay: isHovering,
+                                resetOnPause: true,
+                            }}
                             loop
                             muted
                             playsinline
@@ -177,12 +181,23 @@
         opacity: 1;
     }
 
-    .portfolio-card img,
-    .portfolio-card video {
+    .base-layer img,
+    .base-layer video {
         display: block;
         width: 100%;
         height: 100%;
         object-fit: var(--image-fit-object, cover);
+        object-position: var(--image-position, center);
+        transition: transform 0.5s ease;
+        pointer-events: none;
+    }
+
+    .hover-layer img,
+    .hover-layer video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: var(--hover-image-fit-object, cover);
         object-position: var(--image-position, center);
         transition: transform 0.5s ease;
         pointer-events: none;

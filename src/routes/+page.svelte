@@ -1,7 +1,6 @@
 <script>
   import AnimatedLogoText from "$lib/header/DeltaCVAnimatedLogoAndText.svelte";
   import Navbar from "$lib/header/Navbar.svelte";
-  import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
   import { m } from "$lib/media";
@@ -10,29 +9,10 @@
   import FeaturedProject from "$lib/projects/FeaturedProjectCard.svelte";
   import RecentBlogPosts from "$lib/blog/RecentBlogPosts.svelte";
 
-  import eocvsim_img from "$lib/assets/eocvsim.png";
-  import papervision_img from "$lib/assets/papervision.png";
-  import papervision_gif from "$lib/assets/papervision.gif";
-
   import Footer from "$lib/footer/Footer.svelte";
   import { User } from "lucide-svelte";
 
-  let ready = false;
-  let imagesLoaded = 0;
   let scrollY = 0;
-  const imageSources = [eocvsim_img, papervision_gif];
-  function checkImagesLoaded() {
-    imagesLoaded++;
-    if (imagesLoaded === imageSources.length) ready = true;
-  }
-  onMount(() => {
-    imageSources.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-      img.onload = checkImagesLoaded;
-      img.onerror = checkImagesLoaded;
-    });
-  });
 </script>
 
 <svelte:window bind:scrollY />
@@ -45,59 +25,59 @@
   />
 </svelte:head>
 
-{#if ready}
-  <div class="container">
-    <Navbar visible={scrollY > 250} />
+<div class="container">
+  <Navbar visible={scrollY > 250} />
 
-    <header class="header">
-      <div class="logo">
-        <AnimatedLogoText massive={true} />
-      </div>
-    </header>
+  <header class="header">
+    <div class="logo">
+      <AnimatedLogoText massive={true} />
+    </div>
+  </header>
 
-    <main class="content" in:fade={{ duration: 500 }}>
-      <!-- Featured Project Full Width -->
-      <div class="featured-section">
-        <FeaturedProject
-          title="PaperVision"
-          description="Create your custom OpenCV algorithms using a user-friendly visual interface inspired by industry-leading node editors. Built from the ground up to solve the steep learning curve of Computer Vision in Java & Python."
-          hoverImage={papervision_img}
-          image={papervision_gif}
-          href="/papervision"
-        />
-      </div>
+  <main class="content" in:fade={{ duration: 500 }}>
+    <!-- Featured Project Full Width -->
+    <div class="featured-section">
+      <FeaturedProject
+        title="PaperVision"
+        description="Create your custom OpenCV algorithms using a user-friendly visual interface inspired by industry-leading node editors. Built from the ground up to solve the steep learning curve of Computer Vision in Java & Python."
+        image={m("papervision.png")}
+        hoverImage={m("papervision-hero.mp4")}
+        imageFit="fill"
+        hoverImageFit="fit"
+        href="/papervision"
+      />
+    </div>
 
-      <!-- Secondary Projects Grid -->
-      <div class="secondary-grid">
-        <Project
-          title="EOCV-Sim"
-          description="Develop, test, and tune your EasyOpenCV pipelines directly on your computer with a simple interface!"
-          image={m("eocvsim.png")}
-          hoverImage={m("eocvsim-tuner.mp4")}
-          imageFit="contain"
-          href="/eocv-sim"
-        />
+    <!-- Secondary Projects Grid -->
+    <div class="secondary-grid">
+      <Project
+        title="EOCV-Sim"
+        description="Develop, test, and tune your EasyOpenCV pipelines directly on your computer with a simple interface!"
+        image={m("eocvsim.png")}
+        hoverImage={m("eocvsim-tuner.mp4")}
+        imageFit="fit"
+        href="/eocv-sim"
+      />
 
-        <!-- Meet the Developer Card -->
-        <a href="/people/serivesmejia" class="developer-card">
-          <div class="dev-icon">
-            <User size={48} strokeWidth={1.5} color="#58a6ff" />
-          </div>
-          <h2>Meet the Developer</h2>
-          <p>
-            Hi, I'm Sebastian! See my freelancing portfolio, technical writing,
-            and background.
-          </p>
-          <span class="read-more">View Profile &rarr;</span>
-        </a>
-      </div>
+      <!-- Meet the Developer Card -->
+      <a href="/people/serivesmejia" class="developer-card">
+        <div class="dev-icon">
+          <User size={48} strokeWidth={1.5} color="#58a6ff" />
+        </div>
+        <h2>Meet the Developer</h2>
+        <p>
+          Hi, I'm Sebastian! See my freelancing portfolio, technical writing,
+          and background.
+        </p>
+        <span class="read-more">View Profile &rarr;</span>
+      </a>
+    </div>
 
-      <!-- Recent Writing Snippet -->
-      <RecentBlogPosts />
-    </main>
-    <Footer />
-  </div>
-{/if}
+    <!-- Recent Writing Snippet -->
+    <RecentBlogPosts />
+  </main>
+  <Footer />
+</div>
 
 <style>
   :global(body) {
