@@ -2,6 +2,8 @@
     import { fade, fly } from "svelte/transition";
     import { cubicOut } from "svelte/easing";
     import { lazyVideo } from "$lib/actions/lazyVideo";
+    import { progressiveImage } from "$lib/actions/progressiveImage";
+    import { progressiveVideo } from "$lib/actions/progressiveVideo";
 
     let {
         open = false,
@@ -87,12 +89,13 @@
                 </div>
 
                 {#if image}
-                    <div class="modal-hero">
+                    <div class="modal-hero img-shimmer">
                         {#if isVideo}
                             <video
                                 src={image}
                                 class:pan={imageFit === "pan"}
                                 use:lazyVideo
+                                use:progressiveVideo
                                 loop
                                 muted
                                 playsinline
@@ -101,10 +104,12 @@
                                 aria-label={title}
                             ></video>
                         {:else}
-                            <img
-                                src={image}
-                                class:pan={imageFit === "pan"}
-                                alt={title}
+                            <img 
+                                use:progressiveImage 
+                                src={image} 
+                                class:pan={imageFit === "pan"} 
+                                alt={title} 
+                                loading="lazy"
                             />
                         {/if}
                     </div>

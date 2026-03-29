@@ -287,7 +287,10 @@
         lastScrollY = window.scrollY;
     }
 
+    let mounted = false;
+
     onMount(() => {
+        mounted = true;
         // Idle-pause: only run RAF loop when there's something to animate
         function loop() {
             if (!isActive) { loopRunning = false; return; }
@@ -321,7 +324,7 @@
             window.addEventListener("scroll", onScroll, { passive: true });
             window.addEventListener("mousedown", triggerClickRipple);
             startLoop();
-        }, 3500);
+        }, 100);
 
         return () => {
             clearTimeout(timer);
@@ -338,6 +341,7 @@
     });
 </script>
 
+{#if mounted}
 <div
     class="wrapper"
     class:massive
@@ -365,6 +369,7 @@
         <AnimatedPresentText />
     </div>
 </div>
+{/if}
 
 <style>
     .wrapper {
@@ -374,6 +379,7 @@
         font-size: clamp(1.25rem, 2.5vw, 2.25rem);
         position: relative;
         will-change: transform;
+        user-select: none;
     }
 
 

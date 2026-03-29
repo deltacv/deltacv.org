@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
+    import ProjectHero from "$lib/projects/ProjectHero.svelte";
     import Feature from "$lib/projects/Feature.svelte";
 
     import { Splide, SplideSlide } from "@splidejs/svelte-splide";
@@ -17,6 +16,7 @@
         Video,
     } from "lucide-svelte";
     import { m } from "$lib/media";
+    import { progressiveImage } from "$lib/actions/progressiveImage";
 
     // 4. OPCIONES DEL CARRUSEL
     const splideOptions = {
@@ -28,38 +28,6 @@
         gap: "1rem",
         arrows: false,
     };
-
-    // --- Typing effect ---
-    let typedText = "";
-    const words = ["develop", "test", "tune"];
-    let i = 0,
-        j = 0,
-        isDeleting = false;
-
-    function type() {
-        const currentWord = words[i];
-        if (isDeleting) {
-            typedText = currentWord.substring(0, j - 1);
-            j--;
-            if (j === 0) {
-                isDeleting = false;
-                i = (i + 1) % words.length;
-            }
-        } else {
-            typedText = currentWord.substring(0, j + 1);
-            j++;
-            if (j === currentWord.length) {
-                isDeleting = true;
-                setTimeout(type, 1500);
-                return;
-            }
-        }
-        setTimeout(type, isDeleting ? 100 : 150);
-    }
-
-    onMount(() => {
-        type();
-    });
 </script>
 
 <svelte:head>
@@ -71,47 +39,36 @@
 </svelte:head>
 
 <div class="project-page-wrapper">
-    <main
-        class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100"
-        in:fade={{ duration: 300 }}
+    <ProjectHero
+        title="EOCV-Sim"
+        titleGradient="linear-gradient(to right, #22d3ee, #0ea5e9, #6366f1)"
+        videoSrc={m("/eocvsim-tuner.mp4")}
+        typingWords={["develop", "test", "tune"]}
+        introPreText="A simple interface to"
+        introPostText="your computer vision pipelines."
+        scrollIndicatorColorClass="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]"
     >
-        <section
-            class="text-center min-h-[40vh] flex flex-col justify-center items-center"
-        >
-            <h1
-                class="text-6xl md:text-8xl font-black hero-gradient-text tracking-tighter"
+        {#snippet actions()}
+            <a
+                href="https://docs.deltacv.org/eocv-sim"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-6 py-3 font-semibold text-white bg-cyan-600 rounded-lg shadow-lg shadow-cyan-700/30 hover:bg-cyan-500 transition-all transform hover:scale-105"
             >
-                EOCV-Sim
-            </h1>
-            <p
-                class="mt-6 text-xl md:text-2xl font-medium text-gray-300 max-w-2xl"
+                Read the Docs
+            </a>
+            <a
+                href="https://github.com/deltacv/EOCV-Sim"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-6 py-3 font-semibold text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-all transform hover:scale-105"
             >
-                A simple interface to
-                <span class="font-bold text-white typing-cursor"
-                    >{typedText}</span
-                >
-                your computer vision pipelines.
-            </p>
+                View on GitHub
+            </a>
+        {/snippet}
+    </ProjectHero>
 
-            <div class="mt-8 flex justify-center gap-4">
-                <a
-                    href="https://docs.deltacv.org/eocv-sim"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="px-6 py-3 font-semibold text-white bg-cyan-600 rounded-lg shadow-lg shadow-cyan-700/30 hover:bg-cyan-500 transition-all transform hover:scale-105"
-                >
-                    Read the Docs
-                </a>
-                <a
-                    href="https://github.com/deltacv/EOCV-Sim"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="px-6 py-3 font-semibold text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-all transform hover:scale-105"
-                >
-                    View on GitHub
-                </a>
-            </div>
-        </section>
+    <main class="container mx-auto max-w-6xl px-6 py-24 text-gray-100">
 
         <section class="mt-16 mb-24">
             <div
@@ -142,11 +99,13 @@
                     aria-label="EOCV-Sim Screenshots"
                 >
                     <SplideSlide class="flex items-center">
-                        <figure>
+                        <figure class="img-shimmer rounded-lg">
                             <img
+                                use:progressiveImage
                                 src={m("eocvsim.png")}
                                 alt="EOCV-Sim main user interface"
                                 class="rounded-lg shadow-2xl shadow-cyan-900/20 border border-gray-700"
+                                loading="lazy"
                             />
                             <figcaption class="mt-2 text-sm text-gray-400">
                                 EOCV-Sim main user interface
@@ -155,11 +114,13 @@
                     </SplideSlide>
 
                     <SplideSlide class="flex items-center">
-                        <figure>
+                        <figure class="img-shimmer rounded-lg">
                             <img
+                                use:progressiveImage
                                 src={m("eocvsim-tuner.gif")}
                                 alt="EOCV-Sim variable tuner"
                                 class="rounded-lg shadow-2xl shadow-cyan-900/20 border border-gray-700"
+                                loading="lazy"
                             />
                             <figcaption class="mt-2 text-sm text-gray-400">
                                 Using the variable tuner to adjust thresholds
@@ -241,13 +202,6 @@
         background-attachment: fixed;
     }
 
-    /* El H1 (sin cambios) */
-    .hero-gradient-text {
-        background: linear-gradient(to right, #22d3ee, #0ea5e9, #6366f1);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
     /* ESTILOS DEL CARRUSEL */
     :global(.splide__pagination__page.is-active) {
         background: #22d3ee !important; /* Tu color cyan */
@@ -266,22 +220,11 @@
         bottom: -1.5rem; /* Ajusta esto si quieres más o menos espacio */
     }
 
-    /* ESTILOS ANTERIORES (sin cambios) */
+    /* ESTILOS ANTERIORES */
     .glass-card {
         background: rgba(13, 17, 23, 0.7);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(55, 65, 81, 0.3);
-    }
-
-    .typing-cursor::after {
-        content: "_";
-        animation: blink 0.7s infinite;
-    }
-
-    @keyframes blink {
-        50% {
-            opacity: 0;
-        }
     }
 </style>

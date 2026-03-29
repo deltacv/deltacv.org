@@ -1,5 +1,7 @@
 <script>
     import { lazyVideo } from "$lib/actions/lazyVideo";
+    import { progressiveImage } from "$lib/actions/progressiveImage";
+    import { progressiveVideo } from "$lib/actions/progressiveVideo";
     import { quintOut } from "svelte/easing";
 
     export let title = "Card Title";
@@ -22,7 +24,7 @@
     aria-label={title}
     style="--image-fit: {imageFit === 'fit' ? 'contain' : (imageFit === 'fill' ? 'cover' : imageFit)}; --hover-image-fit: {(hoverImageFit || imageFit) === 'fit' ? 'contain' : ((hoverImageFit || imageFit) === 'fill' ? 'cover' : (hoverImageFit || imageFit))};"
 >
-    <div class="image-container">
+    <div class="image-container img-shimmer">
         <!-- Base Layer -->
         <div
             class="media-layer base-layer"
@@ -32,6 +34,7 @@
                 <video
                     src={image}
                     use:lazyVideo
+                    use:progressiveVideo
                     loop
                     muted
                     playsinline
@@ -42,7 +45,7 @@
                     aria-label={title}
                 ></video>
             {:else}
-                <img src={image} alt={title} loading="lazy" />
+                <img use:progressiveImage src={image} alt={title} loading="lazy" />
             {/if}
         </div>
 
@@ -56,6 +59,7 @@
                             shouldPlay: isHovering,
                             resetOnPause: true,
                         }}
+                        use:progressiveVideo
                         loop
                         muted
                         playsinline
@@ -66,7 +70,7 @@
                         aria-label={title}
                     ></video>
                 {:else}
-                    <img src={hoverImage} alt={title} loading="lazy" />
+                    <img use:progressiveImage src={hoverImage} alt={title} loading="lazy" />
                 {/if}
             </div>
         {/if}

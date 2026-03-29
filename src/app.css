@@ -20,3 +20,62 @@
 	font-family: Arial, sans-serif;
 	overflow-x: hidden;
 }
+
+/* Progressive Image Loading */
+.img-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: #161b22;
+}
+
+.img-shimmer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.03),
+        transparent
+    );
+    animation: shimmer-swipe 2s infinite;
+}
+
+@keyframes shimmer-swipe {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.img-transition {
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.img-loading {
+    opacity: 0;
+    transform: scale(1.02);
+    filter: blur(10px);
+}
+
+.img-loaded {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+}
+
+/* Progressive Video Loading */
+.video-transition {
+    transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), filter 1.2s ease;
+}
+
+.video-loading {
+    opacity: 0;
+    transform: scale(1.02);
+    filter: blur(10px);
+}
+
+.video-loaded {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+}

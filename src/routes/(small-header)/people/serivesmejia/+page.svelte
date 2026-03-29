@@ -14,7 +14,7 @@
 
     let mounted = $state(false);
 
-    onMount(() => {
+    $effect(() => {
         mounted = true;
     });
 </script>
@@ -28,14 +28,19 @@
 </svelte:head>
 
 {#if mounted}
-    <main in:fade={{ duration: 800 }}>
+    <main>
         <div class="portfolio-container">
             <!-- Hero / Intro Section -->
-            <header class="hero">
+            <header class="hero" class:visible={mounted}>
                 <div class="hero-content">
-                    <h1 class="gradient-text">Sebastian Erives</h1>
+                    <h1 class="gradient-text">
+                        Sebastian Erives
+                    </h1>
                     <!-- <p class="subtitle">Software Developer</p> -->
-                    <div class="education-badge" title="Universidad Tecmilenio">
+                    <div
+                        class="education-badge"
+                        title="Universidad Tecmilenio"
+                    >
                         <GraduationCap size={16} strokeWidth={2.5} />
                         <span>
                             Software Engineer • Universidad Tecmilenio
@@ -52,15 +57,18 @@
                         class="flex flex-wrap gap-2 justify-center mb-8 max-w-[600px] mx-auto"
                         aria-label="Tech Stack"
                     >
-                        {#each ["Java", "Kotlin", "Compose", "Android", "SvelteKit", "Minecraft"] as skill}
+                        {#each ["Java", "Kotlin", "Compose", "Android", "SvelteKit", "Minecraft"] as skill, i}
                             <span
-                                class="bg-[#161b22] text-[#8b949e] border border-[#30363d] px-3.5 py-1.5 rounded-full text-[0.85rem] font-medium transition-all duration-200 cursor-default hover:border-[#58a6ff] hover:text-[#c9d1d9] hover:bg-[#21262d]"
+                                class="bg-[#161b22] text-[#8b949e] border border-[#30363d] px-3.5 py-1.5 rounded-full text-[0.85rem] font-medium transition-all duration-200 cursor-default hover:border-[#58a6ff] hover:text-[#c9d1d9] hover:bg-[#21262d] skill-tag"
+                                style="--delay: {0.45 + i * 0.1}s"
                             >
                                 {skill}
                             </span>
                         {/each}
                     </div>
-                    <div class="flex items-center gap-5 mt-4">
+                    <div
+                        class="flex items-center gap-5 mt-4 social-links"
+                    >
                         <span
                             class="text-[#8b949e] text-sm font-medium tracking-wide uppercase mr-1"
                             >Connect</span
@@ -429,6 +437,41 @@
         color: #c9d1d9;
         margin: 0 0 2rem 0;
     }
+
+    /* Entrance Animations */
+    @keyframes heroFlyIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero .gradient-text,
+    .hero .education-badge,
+    .hero .bio,
+    .hero .skill-tag,
+    .hero .social-links {
+        opacity: 0;
+        will-change: transform, opacity;
+    }
+
+    .hero.visible .gradient-text,
+    .hero.visible .education-badge,
+    .hero.visible .bio,
+    .hero.visible .skill-tag,
+    .hero.visible .social-links {
+        animation: heroFlyIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .hero .gradient-text { animation-delay: 0.1s; }
+    .hero .education-badge { animation-delay: 0.25s; }
+    .hero .bio { animation-delay: 0.4s; }
+    .hero .skill-tag { animation-delay: var(--delay); }
+    .hero .social-links { animation-delay: 0.9s; }
 
     /* Projects Section */
     .projects-section {

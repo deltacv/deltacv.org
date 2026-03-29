@@ -17,7 +17,7 @@ export const m = (path: string) => {
                 let urlPath = $page.url.pathname.replace(/^\/|\/$/g, '');
 
                 // If we are in a subroute, use it as a prefix for relative paths
-                if (urlPath && !path.startsWith(urlPath)) {
+                if (urlPath && !path.startsWith(urlPath + '/')) {
                     prefix = `${urlPath}/`;
                 }
             }

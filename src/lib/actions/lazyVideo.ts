@@ -3,13 +3,33 @@ export interface LazyVideoOptions {
     resetOnPause?: boolean;
 }
 
+// SHARED OBSERVERS for better performance (one observer for ALL lazy videos)
+const callbacks = new WeakMap<Element, (isIntersecting: boolean, isPreload?: boolean) => void>();
+
+const preloadObserver = typeof window !== 'undefined' ? new IntersectionObserver(
+    (entries) => {
+        for (const entry of entries) {
+            if (entry.isIntersecting) {
+                const cb = callbacks.get(entry.target);
+                if (cb) cb(true, true);
+            }
+        }
+    },
+    { rootMargin: '400px', threshold: 0 }
+) : null;
+
+const playObserver = typeof window !== 'undefined' ? new IntersectionObserver(
+    (entries) => {
+        for (const entry of entries) {
+            const cb = callbacks.get(entry.target);
+            if (cb) cb(entry.isIntersecting);
+        }
+    },
+    { rootMargin: '0px', threshold: 0.1 }
+) : null;
+
 /**
  * Svelte action: lazyVideo
- *
- * - Starts buffering (preload="auto") when the video is within 400px of the viewport
- * - Plays the video when it enters the viewport (if shouldPlay is true)
- * - Pauses when it leaves or when shouldPlay becomes false
- * - Resets to 0:00 when paused if resetOnPause is true
  */
 export function lazyVideo(node: HTMLVideoElement, initialOptions: LazyVideoOptions = {}) {
     let isInViewport = false;
@@ -18,9 +38,7 @@ export function lazyVideo(node: HTMLVideoElement, initialOptions: LazyVideoOptio
     function updatePlayback() {
         const canPlay = options.shouldPlay && isInViewport;
         if (canPlay) {
-            node.play().catch(() => {
-                // Autoplay blocked — not a problem
-            });
+            node.play().catch(() => {});
         } else {
             node.pause();
             if (options.resetOnPause) {
@@ -29,28 +47,24 @@ export function lazyVideo(node: HTMLVideoElement, initialOptions: LazyVideoOptio
         }
     }
 
-    // Outer observer: triggers preload ~400px before visible
-    const preloadObserver = new IntersectionObserver(
-        (entries) => {
-            if (entries[0].isIntersecting) {
-                node.preload = 'auto';
-                preloadObserver.disconnect();
+    callbacks.set(node, (isIntersecting, isPreload) => {
+        if (isPreload) {
+            // Stage 1: metadata handshake (lightweight)
+            if (node.preload !== 'auto') {
+                node.preload = 'metadata';
             }
-        },
-        { rootMargin: '400px', threshold: 0 }
-    );
-
-    // Inner observer: viewport sync
-    const playObserver = new IntersectionObserver(
-        (entries) => {
-            isInViewport = entries[0].isIntersecting;
+        } else {
+            // Stage 2: full buffer for visible videos
+            if (isIntersecting) {
+                node.preload = 'auto';
+            }
+            isInViewport = isIntersecting;
             updatePlayback();
-        },
-        { rootMargin: '0px', threshold: 0.1 }
-    );
+        }
+    });
 
-    preloadObserver.observe(node);
-    playObserver.observe(node);
+    preloadObserver?.observe(node);
+    playObserver?.observe(node);
 
     return {
         update(newOptions: LazyVideoOptions) {
@@ -58,8 +72,9 @@ export function lazyVideo(node: HTMLVideoElement, initialOptions: LazyVideoOptio
             updatePlayback();
         },
         destroy() {
-            preloadObserver.disconnect();
-            playObserver.disconnect();
+            preloadObserver?.unobserve(node);
+            playObserver?.unobserve(node);
+            callbacks.delete(node);
         }
     };
 }

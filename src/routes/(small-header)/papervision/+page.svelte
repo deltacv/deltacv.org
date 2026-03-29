@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { onMount } from "svelte";
-    import { fade } from "svelte/transition";
+    import ProjectHero from "$lib/projects/ProjectHero.svelte";
     import Feature from "$lib/projects/Feature.svelte";
 
     import { m } from "$lib/media";
+    import { progressiveImage } from "$lib/actions/progressiveImage";
 
     // 2. IMPORTAMOS SVELTESPLIDE (El carrusel)
     import { Splide, SplideSlide } from "@splidejs/svelte-splide";
@@ -31,38 +31,6 @@
         gap: "1rem",
         arrows: false,
     };
-
-    // --- Typing effect ---
-    let typedText = "";
-    const words = ["create", "prototype", "tune", "export"];
-    let i = 0,
-        j = 0,
-        isDeleting = false;
-
-    function type() {
-        const currentWord = words[i];
-        if (isDeleting) {
-            typedText = currentWord.substring(0, j - 1);
-            j--;
-            if (j === 0) {
-                isDeleting = false;
-                i = (i + 1) % words.length;
-            }
-        } else {
-            typedText = currentWord.substring(0, j + 1);
-            j++;
-            if (j === currentWord.length) {
-                isDeleting = true;
-                setTimeout(type, 1500);
-                return;
-            }
-        }
-        setTimeout(type, isDeleting ? 100 : 150);
-    }
-
-    onMount(() => {
-        type();
-    });
 </script>
 
 <svelte:head>
@@ -74,49 +42,36 @@
 </svelte:head>
 
 <div class="project-page-wrapper">
-    <main
-        class="container mx-auto max-w-6xl px-6 pt-32 pb-16 text-gray-100"
-        in:fade={{ duration: 300 }}
+    <ProjectHero
+        title="PaperVision"
+        titleGradient="linear-gradient(to right, #fbbf24, #f59e0b, #ea580c)"
+        videoSrc={m("/papervision-hero.mp4")}
+        typingWords={["create", "prototype", "tune", "export"]}
+        introPreText="Visually"
+        introPostText="your computer vision algorithms."
+        scrollIndicatorColorClass="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]"
     >
-        <section
-            class="text-center min-h-[40vh] flex flex-col justify-center items-center"
-        >
-            <h1
-                class="text-6xl md:text-8xl font-black hero-gradient-text tracking-tighter"
+        {#snippet actions()}
+            <a
+                href="https://docs.deltacv.org/papervision/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-6 py-3 font-semibold text-white bg-amber-500 rounded-lg shadow-lg shadow-amber-600/30 hover:bg-amber-400 transition-all transform hover:scale-105"
             >
-                PaperVision
-            </h1>
-
-            <p
-                class="mt-6 text-xl md:text-2xl font-medium text-gray-300 max-w-2xl"
+                Read the Docs
+            </a>
+            <a
+                href="https://github.com/deltacv/PaperVision"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-6 py-3 font-semibold text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-all transform hover:scale-105"
             >
-                Visually
-                <span class="font-bold text-white typing-cursor"
-                    >{typedText}</span
-                >
-                your computer vision algorithms.
-            </p>
+                View on GitHub
+            </a>
+        {/snippet}
+    </ProjectHero>
 
-            <div class="mt-8 flex justify-center gap-4">
-                <a
-                    href="https://docs.deltacv.org/papervision/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="px-6 py-3 font-semibold text-white bg-amber-500 rounded-lg shadow-lg shadow-amber-600/30 hover:bg-amber-400 transition-all transform hover:scale-105"
-                >
-                    Read the Docs
-                </a>
-                <a
-                    href="https://github.com/deltacv/PaperVision"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="px-6 py-3 font-semibold text-white bg-gray-800 rounded-lg hover:bg-gray-700 transition-all transform hover:scale-105"
-                >
-                    View on GitHub
-                </a>
-            </div>
-        </section>
-
+    <main class="container mx-auto max-w-6xl px-6 py-24 text-gray-100">
         <section class="my-24">
             <div
                 class="glass-card rounded-2xl p-8 md:p-12 shadow-2xl shadow-amber-900/10 max-w-2xl mx-auto"
@@ -134,36 +89,38 @@
             </div>
         </section>
 
-        <section class="max-w-2xl w-full mx-auto mt-16 mb-24">
-            <Splide
-                options={splideOptions}
-                aria-label="PaperVision Screenshots"
-            >
-                <SplideSlide class="flex items-center">
-                    <figure>
+        <section class="max-w-2xl w-full mx-auto mt-12 mb-20">
+            <Splide options={splideOptions} aria-label="PaperVision Showcase">
+                <SplideSlide class="pb-12 text-center">
+                    <figure class="img-shimmer rounded-lg w-fit mx-auto inline-block">
                         <img
-                            src={m("papervision-1.gif")}
-                            alt="PaperVision node-based editor"
-                            class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700"
+                            use:progressiveImage
+                            src={m("papervision-guidedtour.png")}
+                            alt="PaperVision Guided Tour in the editor"
+                            class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700 max-h-[300px] w-auto object-contain"
+                            loading="lazy"
                         />
-                        <figcaption class="mt-2 text-sm text-gray-400">
-                            Build pipelines in the node editor
-                        </figcaption>
                     </figure>
+                    <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">
+                        Learn about PaperVision in the integrated guided
+                        tour.
+                    </p>
                 </SplideSlide>
 
-                <SplideSlide class="flex items-center">
-                    <figure>
+                <SplideSlide class="pb-12 text-center">
+                    <figure class="img-shimmer rounded-lg w-fit mx-auto inline-block">
                         <img
+                            use:progressiveImage
                             src={m("papervision.gif")}
                             alt="GIF of PaperVision's node editor in action"
-                            class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700"
+                            class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700 max-h-[300px] w-auto object-contain"
+                            loading="lazy"
                         />
-                        <figcaption class="mt-2 text-sm text-gray-400">
-                            Seamlessly visualize and tune your pipeline in the
-                            editor
-                        </figcaption>
                     </figure>
+                    <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">
+                        Seamlessly visualize and tune your pipeline in the
+                        editor
+                    </p>
                 </SplideSlide>
             </Splide>
         </section>
@@ -238,16 +195,8 @@
         background-attachment: fixed;
     }
 
-    /* CAMBIO: Gradiente del H1 (Amarillo a Naranja) */
-    .hero-gradient-text {
-        background: linear-gradient(to right, #facc15, #f97316);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
     /* ESTILOS DEL CARRUSEL */
     :global(.splide__pagination__page.is-active) {
-        /* CAMBIO: Color de la paginación */
         background: #facc15 !important;
         transform: scale(1.2);
     }
@@ -264,22 +213,10 @@
         bottom: -1.5rem;
     }
 
-    /* ESTILOS ANTERIORES (sin cambios) */
     .glass-card {
         background: rgba(13, 17, 23, 0.7);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(55, 65, 81, 0.3);
-    }
-
-    .typing-cursor::after {
-        content: "_";
-        animation: blink 0.7s infinite;
-    }
-
-    @keyframes blink {
-        50% {
-            opacity: 0;
-        }
     }
 </style>

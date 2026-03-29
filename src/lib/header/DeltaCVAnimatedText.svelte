@@ -1,8 +1,12 @@
 <script>
-    import { fade, fly } from 'svelte/transition';
+    import { fade, fly } from "svelte/transition";
 </script>
 
-<div class="logo-text" in:fly={{ x: -50, delay: 1000, duration: 2300 }} out:fade={{ duration: 1200 }}>
+<div
+    class="logo-text"
+    in:fly={{ x: -50, delay: 1000, duration: 2300 }}
+    out:fade={{ duration: 1200 }}
+>
     <h1>deltacv</h1>
     <p in:fly={{ y: -50, delay: 1200, duration: 2500 }}>
         Making computer vision approachable to everyone.
@@ -19,7 +23,8 @@
         margin-left: 2vw;
     }
 
-    h1, p {
+    h1,
+    p {
         font-family: "Noto Sans", sans-serif;
         margin: 0;
         padding: 0;

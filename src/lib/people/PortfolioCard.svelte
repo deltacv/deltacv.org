@@ -1,5 +1,7 @@
 <script lang="ts">
     import { lazyVideo } from "$lib/actions/lazyVideo";
+    import { progressiveImage } from "$lib/actions/progressiveImage";
+    import { progressiveVideo } from "$lib/actions/progressiveVideo";
 
     let {
         title = "Project Title",
@@ -29,7 +31,7 @@
     aria-label={`View details for ${title}`}
 >
     <!-- Image Area -->
-    <div class="image-container">
+    <div class="image-container img-shimmer">
         {#if staticSrc || hoverSrc}
             {#if staticSrc}
                 <div
@@ -41,6 +43,7 @@
                             src={staticSrc}
                             class:pan={imageFit === "pan"}
                             use:lazyVideo
+                            use:progressiveVideo
                             loop
                             muted
                             playsinline
@@ -51,10 +54,11 @@
                             aria-label={title}
                         ></video>
                     {:else}
-                        <img
-                            src={staticSrc}
-                            class:pan={imageFit === "pan"}
-                            alt={title}
+                        <img 
+                            use:progressiveImage 
+                            src={staticSrc} 
+                            class:pan={imageFit === "pan"} 
+                            alt={title} 
                             loading="lazy"
                         />
                     {/if}
@@ -71,6 +75,7 @@
                                 shouldPlay: isHovering,
                                 resetOnPause: true,
                             }}
+                            use:progressiveVideo
                             loop
                             muted
                             playsinline
@@ -81,10 +86,11 @@
                             aria-label={title}
                         ></video>
                     {:else}
-                        <img
-                            src={hoverSrc}
-                            class:pan={imageFit === "pan"}
-                            alt={title}
+                        <img 
+                            use:progressiveImage 
+                            src={hoverSrc} 
+                            class:pan={imageFit === "pan"} 
+                            alt={title} 
                             loading="lazy"
                         />
                     {/if}
