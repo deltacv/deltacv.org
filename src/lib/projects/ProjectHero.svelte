@@ -12,6 +12,7 @@
         introPreText = "",
         introPostText = "",
         scrollIndicatorColorClass = "text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]",
+        videoFit = "contain",
         actions,
     } = $props<{
         title: string;
@@ -21,6 +22,7 @@
         introPreText: string;
         introPostText: string;
         scrollIndicatorColorClass?: string;
+        videoFit?: "contain" | "cover";
         actions: Snippet;
     }>();
 
@@ -32,7 +34,7 @@
 
     function type() {
         if (typingWords.length === 0) return;
-        
+
         const currentWord = typingWords[i];
         if (isDeleting) {
             typedText = currentWord.substring(0, j - 1);
@@ -62,30 +64,77 @@
         }
 
         let isSnapping = false;
+        let snapTimeout: ReturnType<typeof setTimeout>;
+        let animationFrameId: number;
+
+        function animateScrollTo(targetY: number, duration: number = 400) {
+            isSnapping = true;
+            const startY = window.scrollY || document.documentElement.scrollTop || 0;
+            const distance = targetY - startY;
+            let startTime: number | null = null;
+
+            // easeOutCubic (snappier, faster to start, smooth to stop)
+            function easeOutCubic(t: number, b: number, c: number, d: number) {
+                t /= d;
+                t--;
+                return c * (t * t * t + 1) + b;
+            }
+
+            function step(currentTime: number) {
+                if (startTime === null) startTime = currentTime;
+                const timeElapsed = currentTime - startTime;
+                
+                // Math.round fixes sub-pixel APZ stutter in Firefox
+                const nextY = Math.round(easeOutCubic(timeElapsed, startY, distance, duration));
+                
+                window.scrollTo(0, nextY);
+
+                if (timeElapsed < duration) {
+                    animationFrameId = requestAnimationFrame(step);
+                } else {
+                    window.scrollTo(0, targetY);
+                    clearTimeout(snapTimeout);
+                    snapTimeout = setTimeout(() => { isSnapping = false; }, 100);
+                }
+            }
+            
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = requestAnimationFrame(step);
+        }
 
         const handleWheel = (e: WheelEvent) => {
-            if (isSnapping) return;
-            const scroll = window.scrollY;
+            if (isSnapping) {
+                e.preventDefault();
+                // We DO NOT extend the lock here. 
+                // Momentum events are swallowed only while the visual animation plays.
+                return;
+            }
+            
+            const scroll = window.scrollY || document.documentElement.scrollTop || 0;
             const vh = window.innerHeight;
+            
+            let dy = e.deltaY;
+            if (e.deltaMode === 1) dy *= 20; 
+            else if (e.deltaMode === 2) dy = vh; 
 
-            // From Hero to Content
-            if (scroll < 10 && e.deltaY > 0) {
-                isSnapping = true;
+            // DOWNWARDS SNAP
+            if (scroll < 50 && dy > 0) {
                 e.preventDefault();
-                window.scrollTo({ top: vh, behavior: "smooth" });
-                setTimeout(() => (isSnapping = false), 800);
+                animateScrollTo(vh);
             } 
-            // From Content to Hero
-            else if (scroll >= vh - 10 && scroll <= vh + 10 && e.deltaY < 0) {
-                isSnapping = true;
+            // UPWARDS SNAP
+            else if (scroll > 20 && scroll <= vh + 50 && dy < 0) {
                 e.preventDefault();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                setTimeout(() => (isSnapping = false), 800);
+                animateScrollTo(0);
             }
         };
 
         window.addEventListener("wheel", handleWheel, { passive: false });
-        return () => window.removeEventListener("wheel", handleWheel);
+        return () => {
+            window.removeEventListener("wheel", handleWheel);
+            clearTimeout(snapTimeout);
+            cancelAnimationFrame(animationFrameId);
+        };
     });
 </script>
 
@@ -101,6 +150,7 @@
                 loop
                 playsinline
                 class="hero-video"
+                style="--video-fit: {videoFit}"
             ></video>
             <div class="hero-video-overlay"></div>
         </div>
@@ -120,23 +170,32 @@
         >
             {introPreText}
             {#if typingWords.length > 0}
-                <span class="font-bold text-white typing-cursor">{typedText}</span>
+                <span class="font-bold text-white typing-cursor"
+                    >{typedText}</span
+                >
             {/if}
             {introPostText}
         </p>
 
-        <div class="mt-8 flex justify-center gap-4 hero-actions" in:fly={{ y: 20, duration: 800, delay: 600 }}>
+        <div
+            class="mt-8 flex justify-center gap-4 hero-actions"
+            in:fly={{ y: 20, duration: 800, delay: 600 }}
+        >
             {@render actions()}
         </div>
     </div>
 
-    <button 
-        class="scroll-indicator" 
+    <button
+        class="scroll-indicator"
         in:fade={{ delay: 1000, duration: 800 }}
-        onclick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
+        onclick={() =>
+            window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
         aria-label="Scroll to content"
     >
-        <ChevronDown size={48} class="animate-bounce {scrollIndicatorColorClass}" />
+        <ChevronDown
+            size={48}
+            class="animate-bounce {scrollIndicatorColorClass}"
+        />
     </button>
 </section>
 
@@ -160,10 +219,34 @@
         width: 100%;
         height: 100%;
         z-index: 0;
-        -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent),
-                          linear-gradient(to right, transparent, black 15%, black 85%, transparent);
-        mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent),
-                    linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        -webkit-mask-image: linear-gradient(
+                to bottom,
+                transparent,
+                black 20%,
+                black 80%,
+                transparent
+            ),
+            linear-gradient(
+                to right,
+                transparent,
+                black 15%,
+                black 85%,
+                transparent
+            );
+        mask-image: linear-gradient(
+                to bottom,
+                transparent,
+                black 20%,
+                black 80%,
+                transparent
+            ),
+            linear-gradient(
+                to right,
+                transparent,
+                black 15%,
+                black 85%,
+                transparent
+            );
         -webkit-mask-composite: source-in;
         mask-composite: intersect;
     }
@@ -171,7 +254,7 @@
     .hero-video {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: var(--video-fit, contain);
         opacity: 0.65;
         filter: brightness(0.85) contrast(1.1);
     }
@@ -224,7 +307,7 @@
             opacity: 0;
         }
     }
-    
+
     .hero-intro-text,
     .hero-actions {
         position: relative;

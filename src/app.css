@@ -47,6 +47,11 @@
     100% { transform: translateX(100%); }
 }
 
+.img-shimmer:has(.img-loaded)::before,
+.img-shimmer:has(.video-loaded)::before {
+    display: none;
+}
+
 .img-transition {
     transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }

@@ -1,7 +1,5 @@
 <script lang="ts">
-    import { lazyVideo } from "$lib/actions/lazyVideo";
-    import { progressiveImage } from "$lib/actions/progressiveImage";
-    import { progressiveVideo } from "$lib/actions/progressiveVideo";
+    import MediaElement from "$lib/ui/MediaElement.svelte";
 
     let {
         title = "Project Title",
@@ -38,62 +36,25 @@
                     class="media-layer base-layer"
                     class:fade-out={isHovering && hoverSrc}
                 >
-                    {#if /\.(mp4|webm|ogg|mov)$/i.test(staticSrc)}
-                        <video
-                            src={staticSrc}
-                            class:pan={imageFit === "pan"}
-                            use:lazyVideo
-                            use:progressiveVideo
-                            loop
-                            muted
-                            playsinline
-                            disablePictureInPicture
-                            disableRemotePlayback
-                            controlsList="nodownload noplaybackrate noplaylist"
-                            preload="none"
-                            aria-label={title}
-                        ></video>
-                    {:else}
-                        <img 
-                            use:progressiveImage 
-                            src={staticSrc} 
-                            class:pan={imageFit === "pan"} 
-                            alt={title} 
-                            loading="lazy"
-                        />
-                    {/if}
+                    <MediaElement 
+                        src={staticSrc} 
+                        class={imageFit === "pan" ? "pan" : ""} 
+                        alt={title} 
+                    />
                 </div>
             {/if}
 
             {#if hoverSrc}
                 <div class="media-layer hover-layer" class:visible={isHovering}>
-                    {#if /\.(mp4|webm|ogg|mov)$/i.test(hoverSrc)}
-                        <video
-                            src={hoverSrc}
-                            class:pan={imageFit === "pan"}
-                            use:lazyVideo={{
-                                shouldPlay: isHovering,
-                                resetOnPause: true,
-                            }}
-                            use:progressiveVideo
-                            loop
-                            muted
-                            playsinline
-                            disablePictureInPicture
-                            disableRemotePlayback
-                            controlsList="nodownload noplaybackrate noplaylist"
-                            preload="none"
-                            aria-label={title}
-                        ></video>
-                    {:else}
-                        <img 
-                            use:progressiveImage 
-                            src={hoverSrc} 
-                            class:pan={imageFit === "pan"} 
-                            alt={title} 
-                            loading="lazy"
-                        />
-                    {/if}
+                    <MediaElement 
+                        src={hoverSrc} 
+                        class={imageFit === "pan" ? "pan" : ""} 
+                        alt={title} 
+                        lazyVideoConfig={{
+                            shouldPlay: isHovering,
+                            resetOnPause: true,
+                        }}
+                    />
                 </div>
             {/if}
         {:else}
@@ -187,8 +148,8 @@
         opacity: 1;
     }
 
-    .base-layer img,
-    .base-layer video {
+    .base-layer :global(img),
+    .base-layer :global(video) {
         display: block;
         width: 100%;
         height: 100%;
@@ -198,8 +159,8 @@
         pointer-events: none;
     }
 
-    .hover-layer img,
-    .hover-layer video {
+    .hover-layer :global(img),
+    .hover-layer :global(video) {
         display: block;
         width: 100%;
         height: 100%;
@@ -209,17 +170,17 @@
         pointer-events: none;
     }
 
-    .portfolio-card img.pan,
-    .portfolio-card video.pan {
+    .portfolio-card :global(img.pan),
+    .portfolio-card :global(video.pan) {
         object-fit: cover;
         animation: pan-vertical 30s linear infinite;
         transition: object-fit 0.3s ease;
     }
 
-    .portfolio-card:hover img.pan,
-    .portfolio-card:hover video.pan,
-    .portfolio-card:focus-visible img.pan,
-    .portfolio-card:focus-visible video.pan {
+    .portfolio-card:hover :global(img.pan),
+    .portfolio-card:hover :global(video.pan),
+    .portfolio-card:focus-visible :global(img.pan),
+    .portfolio-card:focus-visible :global(video.pan) {
         animation: none;
         object-fit: contain;
     }
@@ -247,8 +208,8 @@
         background: linear-gradient(135deg, #21262d, #161b22);
     }
 
-    .portfolio-card:hover img,
-    .portfolio-card:hover video {
+    .portfolio-card:hover :global(img),
+    .portfolio-card:hover :global(video) {
         transform: scale(1.05);
     }
 
