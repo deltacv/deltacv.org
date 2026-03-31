@@ -219,36 +219,7 @@
         width: 100%;
         height: 100%;
         z-index: 0;
-        -webkit-mask-image: linear-gradient(
-                to bottom,
-                transparent,
-                black 20%,
-                black 80%,
-                transparent
-            ),
-            linear-gradient(
-                to right,
-                transparent,
-                black 15%,
-                black 85%,
-                transparent
-            );
-        mask-image: linear-gradient(
-                to bottom,
-                transparent,
-                black 20%,
-                black 80%,
-                transparent
-            ),
-            linear-gradient(
-                to right,
-                transparent,
-                black 15%,
-                black 85%,
-                transparent
-            );
-        -webkit-mask-composite: source-in;
-        mask-composite: intersect;
+        background: #05070a;
     }
 
     .hero-video {
@@ -266,9 +237,11 @@
         width: 100%;
         height: 100%;
         background: radial-gradient(
-            ellipse at center,
+            circle at center,
             transparent 0%,
-            rgba(5, 7, 10, 0.4) 100%
+            rgba(5, 7, 10, 0.4) 60%,
+            rgba(5, 7, 10, 0.8) 85%,
+            #05070a 100%
         );
     }
 

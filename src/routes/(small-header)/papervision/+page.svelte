@@ -79,7 +79,7 @@
         introPreText="Visually"
         introPostText="your computer vision algorithms."
         scrollIndicatorColorClass="text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]"
-        videoFit="cover"
+        videoFit="contain"
     >
         {#snippet actions()}
             <div class="flex flex-col gap-4 w-full sm:w-fit">

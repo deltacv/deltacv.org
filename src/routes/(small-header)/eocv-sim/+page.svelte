@@ -76,7 +76,7 @@
         introPreText="A simple interface to"
         introPostText="your computer vision pipelines."
         scrollIndicatorColorClass="text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]"
-        videoFit="cover"
+        videoFit="contain"
     >
         {#snippet actions()}
             <div class="flex flex-col gap-4 w-full sm:w-fit">
