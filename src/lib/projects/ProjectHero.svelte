@@ -150,6 +150,7 @@
                 loop
                 playsinline
                 class="hero-video"
+                class:is-contain={videoFit === "contain"}
                 style="--video-fit: {videoFit}"
             ></video>
             <div class="hero-video-overlay"></div>
@@ -228,6 +229,13 @@
         object-fit: var(--video-fit, contain);
         opacity: 0.65;
         filter: brightness(0.85) contrast(1.1);
+        transition: transform 0.5s ease-out;
+    }
+
+    @media (max-width: 640px) {
+        .hero-video.is-contain {
+            transform: scale(1.6);
+        }
     }
 
     .hero-video-overlay {

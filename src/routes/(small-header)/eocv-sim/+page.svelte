@@ -10,11 +10,14 @@
     import {
         Eye,
         Code2,
-        SlidersHorizontal,
         Zap,
         Tag,
+        SlidersHorizontal,
         Video,
         Download,
+        Apple,
+        Terminal,
+        Monitor,
     } from "lucide-svelte";
     import { m } from "$lib/media";
     import MediaElement from "$lib/ui/MediaElement.svelte";
@@ -225,13 +228,13 @@
                         class="img-shimmer rounded-lg w-fit mx-auto inline-block"
                     >
                         <MediaElement
-                            src={m("eocvsim.png")}
-                            alt="EOCV-Sim main user interface"
+                            src={m("eocvsim-apriltags.mp4")}
+                            alt="EOCV-Sim AprilTag detection"
                             class="rounded-lg shadow-2xl shadow-cyan-900/20 border border-gray-700 max-h-[450px] w-auto object-contain"
                         />
                     </figure>
                     <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">
-                        EOCV-Sim main user interface
+                        EOCV-Sim AprilTag detection
                     </p>
                 </SplideSlide>
 
@@ -573,14 +576,7 @@
                         <div
                             class="p-3 bg-blue-500/10 text-blue-400 rounded-xl"
                         >
-                            <svg
-                                class="w-6 h-6"
-                                viewBox="0 0 88 88"
-                                fill="currentColor"
-                                ><path
-                                    d="M0 12.4l35.6-4.9v35H0v-30.1zm39.6-5.5L88 0v41.6H39.6V6.9zM0 45h35.6v30.5L0 70.3V45zm39.6 0H88v41.6l-48.4-6.8V45z"
-                                /></svg
-                            >
+                            <Monitor size={24} strokeWidth={2} />
                         </div>
                         <h3 class="text-xl font-bold text-white">Windows</h3>
                     </div>
@@ -618,14 +614,7 @@
                         <div
                             class="p-3 bg-gray-500/10 text-gray-300 rounded-xl"
                         >
-                            <svg
-                                class="w-6 h-6"
-                                viewBox="0 0 170 170"
-                                fill="currentColor"
-                                ><path
-                                    d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.92.21-9.84-1.96-14.74-6.53-3.13-2.73-7.1-7.43-11.87-14.09-5.04-7.05-9.61-15.69-13.72-25.92-4.12-10.23-6.18-20.12-6.18-29.67 0-14.45 3.96-26.06 11.87-34.82 7.92-8.75 18-13.11 30.22-13.11 4.7 0 9.77 1.05 15.21 3.17 5.43 2.12 9.06 3.17 10.88 3.17 1.48 0 5.68-1.25 12.63-3.76 6.94-2.5 13.06-3.75 18.35-3.64 9.17.21 17.06 3.01 23.67 8.35v1.28c-7.94 4.82-11.95 11.75-12.06 20.76-.11 10.45 3.65 19.11 11.27 25.99 3.05 2.72 6.57 4.86 10.57 6.42a63.51 63.51 0 0 1-6.6 16.63zM110.75 27.53c-1.89 8.2-5.96 15.02-12.23 20.48-6.26 5.45-13.52 8.31-21.75 8.57-1.12-8.03 2.37-14.88 10.46-20.53 8.1-5.65 15.34-8.5 21.72-8.52h1.8z"
-                                /></svg
-                            >
+                            <Apple size={24} strokeWidth={2} />
                         </div>
                         <h3 class="text-xl font-bold text-white">macOS</h3>
                     </div>
@@ -666,19 +655,7 @@
                         <div
                             class="p-3 bg-indigo-500/10 text-indigo-400 rounded-xl"
                         >
-                            <!-- Terminal icon -->
-                            <svg
-                                class="w-6 h-6"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                stroke-width="2.5"
-                                ><path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                /></svg
-                            >
+                            <Terminal size={24} strokeWidth={2} />
                         </div>
                         <h3 class="text-xl font-bold text-white">Linux</h3>
                     </div>
@@ -696,23 +673,23 @@
                         </li>
                         <li
                             class="flex items-center justify-between p-3 rounded-lg bg-gray-800/50 border border-gray-700/50"
-                            title="Partially tested in Raspbian but not officially endorsed"
+                            title="Not officially tested, but known to work"
                         >
                             <span class="text-sm font-medium text-gray-300"
                                 >Raspberry Pi & ARM</span
                             >
                             <span
-                                class="text-[10px] font-bold tracking-wider px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/20 cursor-help"
-                                >PARTIAL*</span
+                                class="text-[10px] font-bold tracking-wider px-2 py-1 rounded bg-blue-500/20 text-blue-400 border border-blue-500/20 cursor-help"
+                                >UNOFFICIAL*</span
                             >
                         </li>
                     </ul>
                 </div>
             </div>
             <p class="mt-6 text-sm text-gray-500 max-w-2xl text-center">
-                *Linux ARM (like Raspberry Pi) is partially tested but not
-                officially endorsed. Apple Silicon is not actively tested when
-                new features are developed, however, it is known to work.
+                *Both Apple Silicon (macOS) and Linux ARM (Raspberry Pi) are not
+                actively tested when new features are developed; however, they
+                are known to work correctly.
             </p>
         </div>
     </section>
