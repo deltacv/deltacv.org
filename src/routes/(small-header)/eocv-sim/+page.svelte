@@ -234,7 +234,7 @@
                         />
                     </figure>
                     <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">
-                        EOCV-Sim AprilTag detection
+                        Perform AprilTag detection with EOCV-Sim
                     </p>
                 </SplideSlide>
 
@@ -243,13 +243,13 @@
                         class="img-shimmer rounded-lg w-fit mx-auto inline-block"
                     >
                         <MediaElement
-                            src={m("eocvsim-tuner.gif")}
-                            alt="EOCV-Sim variable tuner"
+                            src={m("eocvsim-livecoding.mp4")}
+                            alt="EOCV-Sim live coding"
                             class="rounded-lg shadow-2xl shadow-cyan-900/20 border border-gray-700 max-h-[450px] w-auto object-contain"
                         />
                     </figure>
                     <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">
-                        Using the variable tuner to adjust thresholds
+                        See the results of your code changes in real-time
                     </p>
                 </SplideSlide>
             </Splide>
