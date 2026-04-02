@@ -21,7 +21,7 @@
             class={className}
             use:lazyVideo={lazyVideoConfig}
             use:progressiveVideo
-            loop
+            loop={rest.loop ?? true}
             muted
             playsinline
             disablePictureInPicture

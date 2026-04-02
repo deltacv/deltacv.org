@@ -54,6 +54,24 @@
 
         observer.observe(node);
 
+        // Sync with video duration
+        if (splideRef?.splide) {
+            splideRef.splide.on('active', (slide: any) => {
+                const video = slide.slide.querySelector('video');
+                const autoplay = splideRef.splide.Components.Autoplay;
+                
+                if (video) {
+                    autoplay.pause();
+                    video.onended = () => {
+                        splideRef.splide.go('>');
+                        autoplay.play();
+                    };
+                } else {
+                    autoplay.play();
+                }
+            });
+        }
+
         return {
             destroy() {
                 observer.disconnect();
@@ -249,6 +267,7 @@
                             src={m("papervision-nodes.mp4")}
                             alt="PaperVision's variety of nodes"
                             class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700 max-h-[450px] w-auto object-contain"
+                            loop={false}
                         />
                     </figure>
                     <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">
@@ -265,6 +284,7 @@
                             src={m("papervision-tuner.mp4")}
                             alt="PaperVision's editor being used for fine tuning a pipeline"
                             class="rounded-lg shadow-2xl shadow-amber-900/20 border border-gray-700 max-h-[450px] w-auto object-contain"
+                            loop={false}
                         />
                     </figure>
                     <p class="mt-4 text-sm text-gray-400 max-w-lg mx-auto">

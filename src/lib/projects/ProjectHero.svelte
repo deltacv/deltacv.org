@@ -136,12 +136,50 @@
             cancelAnimationFrame(animationFrameId);
         };
     });
+
+    let mainVideo: HTMLVideoElement = $state(null!);
+    let blurVideo: HTMLVideoElement = $state(null!);
+
+    function syncVideos() {
+        if (!mainVideo || !blurVideo) return;
+        
+        // Sync play state
+        mainVideo.onplay = () => blurVideo.play();
+        mainVideo.onpause = () => blurVideo.pause();
+        mainVideo.onseeked = () => {
+            blurVideo.currentTime = mainVideo.currentTime;
+        };
+
+        // Periodic sync check (every 2s) to prevent drift
+        const interval = setInterval(() => {
+            if (Math.abs(mainVideo.currentTime - blurVideo.currentTime) > 0.3) {
+                blurVideo.currentTime = mainVideo.currentTime;
+            }
+        }, 2000);
+
+        return () => clearInterval(interval);
+    }
+
+    $effect(syncVideos);
 </script>
 
 <section class="hero-full-viewport">
     {#if mounted}
         <div class="hero-video-background">
+            <!-- Blurred Backdrop Mirror -->
             <video
+                bind:this={blurVideo}
+                src={videoSrc}
+                autoplay
+                muted
+                loop
+                playsinline
+                class="hero-video-backdrop"
+            ></video>
+
+            <!-- Main Sharp Video -->
+            <video
+                bind:this={mainVideo}
                 src={videoSrc}
                 use:progressiveVideo
                 in:fade={{ duration: 1000 }}
@@ -230,11 +268,28 @@
         opacity: 0.65;
         filter: brightness(0.85) contrast(1.1);
         transition: transform 0.5s ease-out;
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-video-backdrop {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: blur(50px) brightness(0.4);
+        opacity: 0;
+        z-index: 1;
+        transition: opacity 1s ease-in-out;
     }
 
     @media (max-width: 640px) {
         .hero-video.is-contain {
-            transform: scale(1.6);
+            transform: scale(1.3);
+        }
+        .hero-video-backdrop {
+            opacity: 0.7;
         }
     }
 
