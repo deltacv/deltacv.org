@@ -375,14 +375,14 @@
                                     icon={Briefcase}
                                     iconColor="#58a6ff"
                                 >
-                                    <ul class="list-none space-y-1.5 mt-1">
+                                    <ul class="space-y-1.5 mt-1">
                                         <li>
-                                            • Leveraging Power Automate to
+                                            Leveraging Power Automate to
                                             streamline and provide improvements
                                             to internal business processes.
                                         </li>
                                         <li>
-                                            • Collaborating extensively across
+                                            Collaborating extensively across
                                             teams using Jira and rapid agile
                                             methodologies to deliver solutions.
                                         </li>

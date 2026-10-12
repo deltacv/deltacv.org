@@ -10,6 +10,6 @@
     } = $props();
 </script>
 
-<div class="relative border-l border-[#30363d] ml-3 md:ml-4 py-2 space-y-10 {className}">
+<div class="relative border-l border-[#30363d] ml-3 md:ml-4 py-2 space-y-6 sm:space-y-8 {className}">
     {@render children?.()}
 </div>

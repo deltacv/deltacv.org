@@ -8,7 +8,7 @@
         startDate = "",
         endDate = "",
         icon = null,
-        iconColor = "#8b949e",
+        iconColor = "#58a6ff",
         children
     }: {
         title: string;
@@ -72,7 +72,7 @@
         months -= s.getMonth();
         months += e.getMonth();
         
-        // If start and end are the same month, we might want it to still say 1 month
+        // If start and end are the same month, count as 1 month
         if (months === 0) {
             months = 1;
         }
@@ -89,48 +89,152 @@
         return result.join(' ');
     }
 
-    let displayDate = $derived.by(() => {
-        if (startDate && endDate) {
-            const formattedStart = formatMonthYear(startDate);
-            const formattedEnd = formatMonthYear(endDate);
-            const duration = calculateDuration(startDate, endDate);
-            
-            if (duration) {
-                return `${formattedStart} - ${formattedEnd} · ${duration}`;
-            }
-            return `${formattedStart} - ${formattedEnd}`;
-        }
-        return date;
-    });
+    const isCurrent = $derived(
+        (endDate && endDate.toLowerCase() === 'present') || 
+        (date && date.toLowerCase() === 'present')
+    );
+
+    const formattedStart = $derived(startDate ? formatMonthYear(startDate) : '');
+    const formattedEnd = $derived(endDate ? formatMonthYear(endDate) : '');
+    const duration = $derived(startDate && endDate ? calculateDuration(startDate, endDate) : '');
 </script>
 
-<div class="relative pl-8 md:pl-10 group">
-    <!-- Icon or Dot -->
-    <div class="absolute -left-[17px] top-1 w-8 h-8 rounded-full bg-[#161b22] border border-[#30363d] flex items-center justify-center shadow-sm group-hover:border-[#58a6ff] transition-colors" style="color: {iconColor}">
+<div 
+    class="relative pl-7 md:pl-9 group"
+    style="--accent-color: {iconColor}; --accent-glow: {iconColor}24; --accent-glow-hover: {iconColor}38;"
+>
+    <!-- Icon Node on Timeline Spine -->
+    <div 
+        class="absolute -left-[17px] top-4 sm:top-5 w-8 h-8 rounded-full bg-[#161b22] border-2 border-[#30363d] flex items-center justify-center shadow-md transition-all duration-300 group-hover:scale-110 group-hover:border-[var(--accent-color)] group-hover:shadow-[0_0_12px_var(--accent-glow-hover)] z-10"
+        style="color: {iconColor};"
+    >
         {#if icon}
             {@const Icon = icon}
-            <Icon size={14} strokeWidth={2.5} />
+            <Icon size={14} strokeWidth={2.3} />
         {:else}
             <div class="w-2.5 h-2.5 rounded-full bg-current"></div>
         {/if}
     </div>
 
-    <!-- Content -->
-    <div class="flex flex-col gap-2">
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-1.5 md:gap-4">
-            <h3 class="text-lg font-bold text-[#c9d1d9] tracking-tight">{title}</h3>
-            {#if displayDate}
-                <span class="text-xs font-mono text-[#8b949e] bg-[#21262d] px-2.5 py-1 rounded-md border border-[#30363d] w-fit font-semibold tracking-wide">{displayDate}</span>
+    <!-- Bento Card Container -->
+    <div 
+        class="timeline-card relative rounded-xl bg-[#161b22] p-4.5 sm:p-5 transition-all duration-300"
+        class:is-active-card={isCurrent}
+        class:is-past-card={!isCurrent}
+    >
+        <!-- Header: Title, Subtitle, Date & Duration -->
+        <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-2.5 sm:gap-4">
+            <div class="min-w-0">
+                <h3 class="text-base sm:text-lg font-bold text-[#f0f6fc] tracking-tight group-hover:text-white transition-colors">
+                    {title}
+                </h3>
+                {#if subtitle}
+                    <h4 class="text-sm font-medium text-[#8b949e] mt-0.5">
+                        {subtitle}
+                    </h4>
+                {/if}
+            </div>
+
+            <!-- Date & Duration -->
+            {#if (formattedStart && formattedEnd) || date}
+                <div class="flex items-center gap-2 text-xs font-mono shrink-0 sm:self-start">
+                    <span class="text-[#8b949e]">
+                        {#if formattedStart && formattedEnd}
+                            {formattedStart} &mdash; {formattedEnd}
+                        {:else}
+                            {date}
+                        {/if}
+                    </span>
+                    {#if duration}
+                        <span class="text-[#484f58] select-none">·</span>
+                        <span class="text-[#c9d1d9] bg-[#21262d] px-2 py-0.5 rounded border border-[#30363d] text-[11px] font-medium tracking-wide">
+                            {duration}
+                        </span>
+                    {/if}
+                </div>
             {/if}
         </div>
-        {#if subtitle}
-            <h4 class="text-sm font-medium text-[#8b949e] max-w-[18rem] md:max-w-[22rem] leading-snug text-balance">{subtitle}</h4>
-        {/if}
-        
+
+        <!-- Card Body -->
         {#if children}
-            <div class="text-[#8b949e] text-[0.95rem] leading-relaxed space-y-2 mt-1">
+            <div class="timeline-body text-[#8b949e] text-[0.925rem] leading-relaxed pt-3 border-t border-[#30363d]/60 mt-3.5 space-y-2">
                 {@render children()}
             </div>
         {/if}
     </div>
 </div>
+
+<style>
+    /* Past or concluded experiences */
+    .is-past-card {
+        border: 1px solid #30363d;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .is-past-card:hover {
+        border-color: #484f58;
+        background-color: #181f2a;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes ambient-breathe {
+        0%, 100% {
+            border-color: color-mix(in srgb, var(--accent-color) 35%, #30363d);
+            box-shadow: 0 0 16px -3px var(--accent-glow), 0 4px 12px rgba(0, 0, 0, 0.25);
+        }
+        50% {
+            border-color: color-mix(in srgb, var(--accent-color) 65%, #30363d);
+            box-shadow: 0 0 28px 1px var(--accent-glow-hover), 0 4px 14px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    /* Active / Present experiences: gentle breathing ambient aura */
+    .is-active-card {
+        border: 1px solid color-mix(in srgb, var(--accent-color) 35%, #30363d);
+        box-shadow: 0 0 16px -3px var(--accent-glow), 0 4px 12px rgba(0, 0, 0, 0.25);
+        animation: ambient-breathe 4.5s ease-in-out infinite;
+    }
+
+    .is-active-card:hover {
+        animation-play-state: paused;
+        border-color: color-mix(in srgb, var(--accent-color) 75%, #30363d);
+        box-shadow: 0 0 30px 2px var(--accent-glow-hover), 0 6px 18px rgba(0, 0, 0, 0.35);
+        background-color: #181f2a;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .is-active-card {
+            animation: none;
+        }
+    }
+
+    .timeline-body :global(ul) {
+        list-style: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    .timeline-body :global(li) {
+        position: relative;
+        padding-left: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .timeline-body :global(li:last-child) {
+        margin-bottom: 0;
+    }
+
+    .timeline-body :global(li::before) {
+        content: "▹";
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: var(--accent-color, #58a6ff);
+        font-weight: 700;
+        font-size: 0.9rem;
+    }
+
+    .timeline-body :global(p) {
+        margin: 0;
+    }
+</style>
