@@ -1,0 +1,34 @@
+---
+title: "same tools, new names"
+date: "2026-10-12"
+description: "eocv-sim is now visionbench and papervision is now visiongraph. here's why"
+author: "serivesmejia@deltacv.org"
+tags: ["ftc", "release", "visionbench", "visiongraph"]
+---
+
+<script>
+import { m } from "$lib/media"
+</script>
+
+# what's with that
+
+**VisionBench 2027.0.0** and **VisionGraph 2027.0.0** are out, the first release for the **FIRST Canopy** season. And you may have noticed the names.
+
+_EOCV-Sim_ is now **VisionBench**,<br>
+and _PaperVision_ is now **VisionGraph**. 
+
+Same tools, same project, same person typing the code at odd hours.
+
+# a name that did its job
+
+If you've been around FTC for a while, you probably know **EOCV-Sim** stands for *EasyOpenCV Simulator*. [EasyOpenCV](https://github.com/OpenFTC/EasyOpenCV) is the library most FTC teams use to run OpenCV on the robot, and back in 2020 I needed a way to run that same code on my desktop, because I couldn't get anywhere near a robot. So the name was literally the job description: EasyOpenCV, but simulated. As I wrote in my [first post](/blog/first-steps-in-code-and-vision), it was a quick fix for a very specific problem, and for a while the name was accurate.
+
+**PaperVision** was a different kind of name. It came from wanting a tool that made vision feel approachable, something you could sketch out and understand almost like drawing on paper, before ever touching a line of OpenCV. Then the project kept growing. EOCV-Sim got workspaces, the variable tuner and more input sources, and PaperVision turned into a full node editor. At some point the names stopped describing what the tools actually do, and I kept finding myself explaining what "EOCV" even stands for.
+
+The new names are pretty literal, but I like it that way. A bench is where you build, test and tune things, which is exactly what you do with VisionBench. And a graph is, well, what a node editor is made of, so VisionGraph says what it is on the label. Nothing changes about how you get them: VisionBench still bundles VisionGraph, and this release also comes with a big round of improvements, though the rename is the main story today.
+
+# why now?
+
+Because this is a good moment for it, and it only gets harder the longer you wait. I want deltacv to keep growing for years, and I don't want the name of a single tool to define what it can become. These names leave room for that, and they fit the direction I have in mind for the project a lot better than the old ones did.
+
+You can grab VisionBench from the [deltacv page](/visionbench). If something breaks, open an issue on GitHub, and good luck this season!

@@ -162,6 +162,15 @@ export let visible = true;
               >
                 People
               </a>
+              <a
+                href="/discord"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="dropdown-item"
+                on:click={() => (activeDropdown = null)}
+              >
+                Discord
+              </a>
             </div>
           </div>
         </nav>
@@ -237,6 +246,15 @@ export let visible = true;
             on:click={() => (menuOpen = false)}
           >
             People
+          </a>
+          <a
+            href="/discord"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mobile-dropdown-link"
+            on:click={() => (menuOpen = false)}
+          >
+            Discord
           </a>
         </div>
       </details>

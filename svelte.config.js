@@ -1,7 +1,7 @@
 import { mdsvex } from 'mdsvex';
 import adapter from '@sveltejs/adapter-cloudflare';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import remarkSlug from 'remark-slug'; // <-- 1. IMPORT
+import remarkSlug from 'remark-slug'; 
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
